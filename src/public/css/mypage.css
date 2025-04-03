@@ -1,0 +1,129 @@
+.page-content {
+    text-align: center;
+}
+
+.profile-sec:first-of-type{
+    max-width:900px;
+    margin: 0 auto 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.img-wrap{
+    display: flex;
+    align-items: center;
+}
+
+.img-area {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-color: #D9D9D9;
+    color: transparent;
+}
+
+.input-name{
+    font-size: 36px;
+    font-weight: 700;
+    border:none;
+    margin-left: 80px;
+}
+
+.update-btn {
+    background-color: #fff;
+    border: 2px solid #FF5555;
+    border-radius: 10px;
+    font-size: 26px;
+    font-weight: 700;
+    color: #FF5555;
+    text-align: center;
+    width: 310px;
+    margin-left: 50px;
+    padding: 10px 0;
+    cursor: pointer;
+}
+
+.content-header {
+    width: 100%;
+    position: relative;
+    padding: 0 10% 10px;
+    display: flex;
+}
+
+.content-header::after {
+    display: block;
+    content: '';
+    width: 100vw;
+    height: 2px;
+    background-color: #5F5F5F;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+.list-item {
+    border: none;
+    background: none;
+    padding: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #5F5F5F;
+    cursor: pointer;
+}
+
+.list-item:first-of-type {
+    margin-right: 60px;
+}
+
+.item-list {
+    max-width: 1400px;
+    padding: 0 5%;
+    margin: 50px auto 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    column-gap: 5%;
+    row-gap: 70px;
+}
+
+.item-img-wrap {
+    width: 100%;
+    aspect-ratio: 1/1;
+    margin-bottom: 10px;
+    /* 画像入れれたら以下は削除（見た目調整用に記載） */
+    background-color: #D9D9D9;
+}
+
+.item-img {
+    /* 画像入れれたらCSS調整する */
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.item-name {
+    font-size: 25px;
+    color: #000;
+    text-align: left;
+}
+
+@media screen and (max-width: 850px) {
+    .profile-sec:first-of-type{
+        flex-direction: column;
+    }
+
+    .input-name{
+        font-size: 34px;
+    }
+
+    .update-btn{
+        margin-left: 0;
+        margin-top: 50px;
+        font-size: 24px;
+    }
+
+    .item-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

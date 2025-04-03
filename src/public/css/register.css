@@ -1,0 +1,70 @@
+.search-form,
+.link-wrap,
+.sell-btn {
+    display: none;
+}
+
+.page-content {
+    text-align: center;
+}
+
+.register-form {
+    width: 680px;
+    margin: 0 auto;
+}
+
+.form-label {
+    display: block;
+    width: 100%;
+    font-size: 24px;
+    font-weight: 700;
+    text-align: left;
+    margin-bottom: 8px;
+}
+
+.form-input {
+    width: 100%;
+    font-size: 20px;
+    margin-bottom: 30px;
+    padding: 15px;
+    border: 1px solid #5F5F5F;
+    border-radius: 4px;
+}
+
+.form-input:last-of-type {
+    margin-bottom: 80px;
+}
+
+.register-btn {
+    width: 100%;
+    height: 65px;
+    border: none;
+    border-radius: 5px;
+    background-color: #FF5555;
+    font-size: 26px;
+    font-weight: 700;
+    color: #FFFFFF;
+}
+
+.login-link-wrap {
+    margin: 30px auto 0;
+}
+
+.login-link {
+    font-size: 20px;
+    color: #0073CC;
+}
+
+@media screen and (max-width:850px) {
+    .form-label {
+        font-size: 22px;
+    }
+
+    .form-input:last-of-type {
+        margin-bottom: 50px;
+    }
+
+    .register-btn {
+        font-size: 24px;
+    }
+}

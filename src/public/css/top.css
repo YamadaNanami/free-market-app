@@ -1,0 +1,72 @@
+.page-content{
+    margin-top: 130px;
+}
+
+.content-header{
+    width:100%;
+    position: relative;
+    padding:0 10% 10px;
+    display: flex;
+}
+
+.content-header::after{
+    display: block;
+    content: '';
+    width:100vw;
+    height:2px;
+    background-color: #5F5F5F;
+    position: absolute;
+    bottom: 0;
+    left:0;
+}
+
+.list-item{
+    border:none;
+    background: none;
+    padding: 0;
+    font-size:20px;
+    font-weight:700;
+    color:#5F5F5F;
+    cursor: pointer;
+}
+
+.list-item:first-of-type{
+    margin-right: 60px;
+}
+
+.item-list{
+    max-width: 1400px;
+    padding:0 5%;
+    margin: 50px auto 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    column-gap: 5%;
+    row-gap: 70px;
+}
+
+.item-img-wrap{
+    width:100%;
+    aspect-ratio: 1/1;
+    margin-bottom:10px;
+    /* 画像入れれたら以下は削除（見た目調整用に記載） */
+    background-color:#5F5F5F;
+}
+
+.item-img{
+    /* 画像入れれたらCSS調整する */
+    width:100%;
+    height:auto;
+    object-fit: cover;
+}
+
+.item-name{
+    font-size:25px;
+    color:#000;
+}
+
+@media screen and (max-width: 850px) {
+    .item-list{
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
