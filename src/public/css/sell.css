@@ -1,0 +1,125 @@
+.page-content {
+    text-align: center;
+}
+
+.sell-form {
+    width: 680px;
+    margin: 0 auto;
+}
+
+.sec-title{
+    font-size:30px;
+    font-weight: 700;
+    color:#5F5F5F;
+    text-align: left;
+    border-bottom:1px solid #5F5F5F;
+    margin-top: 60px;
+    padding-bottom: 10px;
+}
+
+.sub-title{
+    font-size: 24px;
+    font-weight: 700;
+    text-align: left;
+    margin-bottom: 5px;
+}
+
+.form-sec:first-of-type{
+    position: relative;
+}
+
+.img-area{
+    display: block;
+    width: 100%;
+    height: 150px;
+    border:1px dashed #5F5F5F;
+    color:transparent;
+}
+
+.img-label{
+    display: block;
+    border: 2px solid #FF5555;
+    border-radius: 10px;
+    font-size: 16px;
+    color: #FF5555;
+    text-align: center;
+    width: 165px;
+    padding: 10px 0;
+    cursor: pointer;
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.input-img{
+    display: none;
+}
+
+.flex-area{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.form-checkbox{
+    display: none;
+}
+
+.checkbox-label{
+    width:auto;
+    padding: 5px 18px;
+    font-size:15px;
+    text-align: center;
+    color: #FF5655;
+    border:2px solid #FF5655;
+    border-radius: 200px;
+    margin: 15px 5px;
+}
+
+.form-checkbox:checked + .checkbox-label{
+    color:#FFFFFF;
+    background-color:#FF5655;
+}
+
+.form-input {
+    width: 100%;
+    font-size: 20px;
+    padding: 15px;
+    border: 1px solid #5F5F5F;
+    border-radius: 4px;
+}
+
+.form-input[name='price'] {
+    margin-bottom: 80px;
+}
+
+.sell-form-btn {
+    width: 100%;
+    height: 65px;
+    border: none;
+    border-radius: 5px;
+    background-color: #FF5555;
+    font-size: 26px;
+    font-weight: 700;
+    color: #FFFFFF;
+}
+
+@media screen and (max-width:850px) {
+    .sec-title{
+        font-size: 28px;
+    }
+
+    .sub-title{
+        font-size: 22px;
+    }
+
+    .form-label {
+        font-size: 22px;
+    }
+
+    .sell-form-btn {
+        font-size: 24px;
+    }
+}
