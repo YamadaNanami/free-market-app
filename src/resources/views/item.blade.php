@@ -6,8 +6,8 @@
 <link rel="stylesheet" href="{{ asset('css/item.css') }}">
 @endsection
 
-@section('action','/logout')
-@section('btn-name','ログアウト')
+<!-- @section('action','/logout')
+@section('btn-name','ログアウト') -->
 
 @section('content')
 <div class="grid-wrap">
@@ -20,6 +20,8 @@
             <p class="brand-name">ブランド名</p>
             <p class="price">¥47,000 (税込)</p>
             <form action="" method="post" class="like-form">
+                @csrf
+                <input type="hidden" name="item_id">
                 <input type="submit" value="" class="like-icon">
                 <input type="number" name="" readonly class="pieces">
             </form>
@@ -28,6 +30,7 @@
                 <p class="pieces"></p>
             </div>
             <form action="/purchase/:item_id" method="post" class="purchase-form">
+                @csrf
                 <!-- 購入手続きのために商品IDを取得する -->
                 <input type="hidden" name="item_id">
                 <button type="submit" class="purchase-btn">購入手続きへ</button>
@@ -61,6 +64,7 @@
             </div>
             <p class="cmt">こちらにコメントが入ります。</p>
             <form action="" method="post" class="cmt-form">
+                @csrf
                 <h4 class="sub-title">商品へのコメント</h4>
                 <textarea name="comment" id="cmt" class="form-input" rows="10"></textarea>
                 <button type="submit" class="cmt-btn">コメントを送信する</button>

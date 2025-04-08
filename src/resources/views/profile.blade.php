@@ -6,12 +6,10 @@
 <link rel="stylesheet" href="{{ asset('css/profile.css') }}">
 @endsection
 
-@section('action','/logout')
-@section('btn-name','ログアウト')
-
 @section('content')
 <h2 class="page-title">プロフィール設定</h2>
 <form action="/mypage/profile" method="post" class="update-form">
+    @csrf
     <div class="update-img">
         <img src="" alt="プロフィール画像" class="img-area">
         <label for="img-file" class="img-label">

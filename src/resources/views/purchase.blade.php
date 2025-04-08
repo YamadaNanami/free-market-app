@@ -6,11 +6,9 @@
 <link rel="stylesheet" href="{{ asset('css/purchase.css') }}">
 @endsection
 
-@section('action','/logout')
-@section('btn-name','ログアウト')
-
 @section('content')
 <form action="" method="post" class="purchase-form">
+    @csrf
     <div class="detail">
         <section class="purchase-sec">
             <img src="" alt="商品画像" class="item-img">

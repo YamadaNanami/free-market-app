@@ -19,12 +19,22 @@
                 </a>
             </h1>
             <form action="post" class="search-form">
+                @csrf
                 <input type="search" name="keyword" class="search-form-input" placeholder="なにをお探しですか？" value="">
             </form>
-            <form action="@yield('action')" method="post" class="form-wrap">
-                <button type="submit" class="form-btn">@yield('btn-name')</button>
+            @if(Auth::check())
+            <form action="/logout" method="post" class="form-wrap">
+                @csrf
+                <button type="submit" class="form-btn">ログアウト</button>
             </form>
+            @else
+            <form action="/login" method="post" class="form-wrap">
+                @csrf
+                <button type="submit" class="form-btn">ログイン</button>
+            </form>
+            @endif
             <form action="/mypage" method="get" class="form-wrap">
+                @csrf
                 <button type="submit" class="form-btn">マイページ</button>
             </form>
             <button name="sell" class="sell-btn">出品</button>

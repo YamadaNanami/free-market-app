@@ -6,12 +6,10 @@
 <link rel="stylesheet" href="{{ asset('css/sell.css') }}">
 @endsection
 
-@section('action','/logout')
-@section('btn-name','ログアウト')
-
 @section('content')
 <h2 class="page-title">商品の出品</h2>
 <form action="/sell" method="post" class="sell-form">
+    @csrf
     <section class="form-sec">
         <h4 class="sub-title">商品画像</h4>
         <img src="" alt="プロフィール画像" class="img-area">
