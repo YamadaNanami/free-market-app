@@ -6,9 +6,6 @@
 <link rel="stylesheet" href="{{ asset('css/mypage.css') }}">
 @endsection
 
-@section('action','/logout')
-@section('btn-name','ログアウト')
-
 @section('content')
 <section class="profile-sec">
     <div class="img-wrap">
@@ -26,9 +23,11 @@
     <div class="content-header">
         <!-- 文字色の処理後で追加する -->
         <form action="/mypage?page=sell" method="" class="item-list-form">
+            @csrf
             <input type="submit" class="list-item" value="出品した商品">
         </form>
         <form action="/mypage?page=buy" class="item-list-form">
+            @csrf
             <input type="submit" class="list-item" value="購入した商品">
         </form>
     </div>

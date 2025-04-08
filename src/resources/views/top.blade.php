@@ -6,17 +6,15 @@
 <link rel="stylesheet" href="{{ asset('css/top.css') }}">
 @endsection
 
-<!-- ログインとログアウトの表示については後で調整する -->
-@section('action','/login')
-@section('btn-name','ログイン')
-
 @section('content')
 <div class="content-header">
     <!-- 文字色の処理後で追加する -->
     <form action="/" method="get" class="item-list-form">
+        @csrf
         <input type="submit" class="list-item" value="おすすめ">
     </form>
     <form action="/?page=mylist" method="get" class="item-list-form">
+        @csrf
         <input type="submit" class="list-item" value="マイリスト">
     </form>
 </div>

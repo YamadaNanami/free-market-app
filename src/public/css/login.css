@@ -28,10 +28,7 @@
     padding: 15px;
     border: 1px solid #5F5F5F;
     border-radius: 4px;
-}
-
-.form-input:first-of-type{
-    margin-bottom:30px;
+    margin-bottom: 30px;
 }
 
 .form-input:last-of-type{

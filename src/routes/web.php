@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ItemController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+// Route::get('/', function () {
+//     return view('auth/login');
+// });
+
+Route::get('/', [ItemController::class, 'index']);
+Route::get('/purchase/::{item_id}', [ItemController::class, 'detail']);
+
+Route::middleware('auth')->group(function () {
+    //ログインしないと見れないページの処理はここに記載する
 });
