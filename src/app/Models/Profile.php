@@ -10,13 +10,10 @@ class Profile extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'img_url',
         'post',
         'address',
         'building'
-    ];
-
-    protected $guarded = [
-        'user_id'
     ];
 }
