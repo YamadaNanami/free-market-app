@@ -20,8 +20,7 @@ class ItemsTableSeeder extends Seeder
 
         $param = [
             'user_id' => $userIds[mt_rand(0,count($userIds)-1)],
-            'category_id' => 5,
-            'img_url' => '/storage/app/public/item_img/Armani+Mens+Clock.jpg',
+            'img_url' => 'item_img/Armani+Mens+Clock.jpg',
             'item_name' => '腕時計',
             'brand_name' => Str::random(10),
             'price' => 15000,
@@ -32,8 +31,7 @@ class ItemsTableSeeder extends Seeder
 
         $param = [
             'user_id' => $userIds[mt_rand(0,count($userIds)-1)],
-            'category_id' => 2,
-            'img_url' => '/storage/app/public/item_img/HDD+Hard+Disk.jpg',
+            'img_url' => 'item_img/HDD+Hard+Disk.jpg',
             'item_name' => 'HDD',
             'brand_name' => Str::random(10),
             'price' => 5000,
@@ -44,8 +42,7 @@ class ItemsTableSeeder extends Seeder
 
         $param = [
             'user_id' => $userIds[mt_rand(0,count($userIds)-1)],
-            'category_id' => 10,
-            'img_url' => '/storage/app/public/item_img/iLoveIMG+d.jpg',
+            'img_url' => 'item_img/iLoveIMG+d.jpg',
             'item_name' => '玉ねぎ3束',
             'brand_name' => Str::random(10),
             'price' => 300,
@@ -56,8 +53,7 @@ class ItemsTableSeeder extends Seeder
 
         $param = [
             'user_id' => $userIds[mt_rand(0,count($userIds)-1)],
-            'category_id' => 1,
-            'img_url' => '/storage/app/public/item_img/Leather+Shoes+Product+Photo.jpg',
+            'img_url' => 'item_img/Leather+Shoes+Product+Photo.jpg',
             'item_name' => '革靴',
             'brand_name' => Str::random(10),
             'price' => 4000,
@@ -68,8 +64,7 @@ class ItemsTableSeeder extends Seeder
 
         $param = [
             'user_id' => $userIds[mt_rand(0,count($userIds)-1)],
-            'category_id' => 2,
-            'img_url' => '/storage/app/public/item_img/Living+Room+Laptop.jpg',
+            'img_url' => 'item_img/Living+Room+Laptop.jpg',
             'item_name' => 'ノートPC',
             'brand_name' => Str::random(10),
             'price' => 45000,
@@ -80,8 +75,7 @@ class ItemsTableSeeder extends Seeder
 
         $param = [
             'user_id' => $userIds[mt_rand(0,count($userIds)-1)],
-            'category_id' => 2,
-            'img_url' => '/storage/app/public/item_img/Music+Mic+4632231.jpg',
+            'img_url' => 'item_img/Music+Mic+4632231.jpg',
             'item_name' => 'マイク',
             'brand_name' => Str::random(10),
             'price' => 8000,
@@ -92,8 +86,7 @@ class ItemsTableSeeder extends Seeder
 
         $param = [
             'user_id' => $userIds[mt_rand(0,count($userIds)-1)],
-            'category_id' => 4,
-            'img_url' => '/storage/app/public/item_img/Purse+fashion+pocket.jpg',
+            'img_url' => 'item_img/Purse+fashion+pocket.jpg',
             'item_name' => 'ショルダーバッグ',
             'brand_name' => Str::random(10),
             'price' => 3500,
@@ -104,8 +97,7 @@ class ItemsTableSeeder extends Seeder
 
         $param = [
             'user_id' => $userIds[mt_rand(0,count($userIds)-1)],
-            'category_id' => 10,
-            'img_url' => '/storage/app/public/item_img/Tumbler+souvenir.jpg',
+            'img_url' => 'item_img/Tumbler+souvenir.jpg',
             'item_name' => 'タンブラー',
             'brand_name' => Str::random(10),
             'price' => 500,
@@ -116,8 +108,7 @@ class ItemsTableSeeder extends Seeder
 
         $param = [
             'user_id' => $userIds[mt_rand(0,count($userIds)-1)],
-            'category_id' => 10,
-            'img_url' => '/storage/app/public/item_img/Waitress+with+Coffee+Grinder.jpg',
+            'img_url' => 'item_img/Waitress+with+Coffee+Grinder.jpg',
             'item_name' => 'コーヒーミル',
             'brand_name' => Str::random(10),
             'price' => 4000,
@@ -128,8 +119,7 @@ class ItemsTableSeeder extends Seeder
 
         $param = [
             'user_id' => $userIds[mt_rand(0,count($userIds)-1)],
-            'category_id' => 4,
-            'img_url' => '/storage/app/public/item_img/MakeUp.jpg',
+            'img_url' => 'item_img/MakeUp.jpg',
             'item_name' => 'メイクセット',
             'brand_name' => Str::random(10),
             'price' => 2500,

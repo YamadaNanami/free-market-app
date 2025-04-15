@@ -33,11 +33,8 @@
                 <button type="submit" class="form-btn">ログイン</button>
             </form>
             @endif
-            <form action="/mypage" method="get" class="form-wrap">
-                @csrf
-                <button type="submit" class="form-btn">マイページ</button>
-            </form>
-            <button name="sell" class="sell-btn">出品</button>
+            <a href="/mypage" class="mypage-btn">マイページ</a>
+            <a href="/sell" class="sell-btn">出品</a>
         </div>
     </header>
 

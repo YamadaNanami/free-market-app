@@ -109,5 +109,4 @@ class LoginController extends Controller
 
         return app(LogoutResponse::class);
     }
-
 }

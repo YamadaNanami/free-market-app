@@ -10,11 +10,10 @@
 <div class="content-header">
     <!-- 文字色の処理後で追加する -->
     <form action="/" method="get" class="item-list-form">
-        @csrf
         <input type="submit" class="list-item" value="おすすめ">
     </form>
+    <!-- ?page=mylistの部分後で修正 -->
     <form action="/?page=mylist" method="get" class="item-list-form">
-        @csrf
         <input type="submit" class="list-item" value="マイリスト">
     </form>
 </div>

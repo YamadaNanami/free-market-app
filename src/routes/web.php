@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\MypageController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SellController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,13 +17,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::get('/', function () {
-//     return view('auth/login');
-// });
-
 Route::get('/', [ItemController::class, 'index']);
 Route::get('/purchase/::{item_id}', [ItemController::class, 'detail']);
 
 Route::middleware('auth')->group(function () {
     //ログインしないと見れないページの処理はここに記載する
+    Route::get('/mypage', [MypageController::class,'index']);
+
+    //プロフィール設定画面の表示
+    Route::get('/mypage/profile',[ProfileController::class,'index'])->name('profile.index');
+
+    //プロフィールの更新処理
+    Route::patch('/mypage/profile', [ProfileController::class, 'update']);
+
+    Route::get('/sell', [SellController::class, 'index']);
+    Route::post('/sell', [SellController::class, 'sell']);
 });
