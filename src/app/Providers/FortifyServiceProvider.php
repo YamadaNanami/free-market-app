@@ -13,6 +13,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Contracts\LogoutResponse;
+use Laravel\Fortify\Contracts\LoginResponse;
 use Laravel\Fortify\Http\Controllers\RegisteredUserController;
 use App\Http\Controllers\RegisterController;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
@@ -32,6 +33,15 @@ class FortifyServiceProvider extends ServiceProvider
                 return redirect('/login');
             }
         });
+
+        //ログイン後にトップ画面に遷移する
+        $this->app->instance(LoginResponse::class, new class implements LoginResponse {
+            public function toResponse($request)
+            {
+                return redirect('/');
+            }
+        });
+
 
         //ユーザ登録処理とログイン処理をカスタマイズしたクラスにバインドする（向き先変更）
         $bindings = [
