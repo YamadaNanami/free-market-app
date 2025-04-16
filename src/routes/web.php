@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
     //プロフィールの更新処理
     Route::patch('/mypage/profile', [ProfileController::class, 'update']);
 
+    // 出品画面の表示
     Route::get('/sell', [SellController::class, 'index']);
     Route::post('/sell', [SellController::class, 'sell']);
 });

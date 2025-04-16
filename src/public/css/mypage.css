@@ -23,6 +23,10 @@
     color: transparent;
 }
 
+.item-list-form:last-of-type{
+    margin-left: 50px;
+}
+
 .input-name{
     font-size: 36px;
     font-weight: 700;
