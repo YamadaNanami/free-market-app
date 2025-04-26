@@ -18,9 +18,8 @@
                     <img src="{{ asset('storage/img/logo.svg') }}" alt="サイトのロゴ画像" class="logo-img">
                 </a>
             </h1>
-            <form action="post" class="search-form">
-                @csrf
-                <input type="search" name="keyword" class="search-form-input" placeholder="なにをお探しですか？" value="">
+            <form action="/search" method="get" class="search-form">
+                <input type="search" name="keyword" class="search-form-input" placeholder="なにをお探しですか？" value="{{ old('keyword',session()->get('searchKeyword')) }}">
             </form>
             @if(Auth::check())
             <form action="/logout" method="post" class="form-wrap">

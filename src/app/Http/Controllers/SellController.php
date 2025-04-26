@@ -29,11 +29,11 @@ class SellController extends Controller
             'condition' => $request->condition
         ];
 
-        $itemId = DB::transaction(static function () use ($item,$request) {
+        DB::transaction(static function () use ($item,$request) {
             Item::create($item);
             $lastId = Item::orderByDesc('id')->first()->id;
 
-            // 登録したアイテムとカテゴリーを紐付ける
+            // 登録した商品とカテゴリーを紐付ける
             foreach($request->categories as $category){
                 Category::find($category)->items()->attach($lastId);
             };

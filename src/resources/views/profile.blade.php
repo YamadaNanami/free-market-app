@@ -12,7 +12,7 @@
     @method('PATCH')
     @csrf
     <div class="update-img">
-        <img src="{{ asset('storage/'.$profile['profile']['img_url']) }}" alt="プロフィール画像" class="img-area">
+        <img src="{{ asset('storage/img/'.$profile['profile']['img_url']) }}" alt="プロフィール画像" class="img-area">
         <label for="img-file" class="img-label">
             画像を選択する
             <input type="file" name="img-file" id="img-file" accept=".jpeg,.png" class="input-img">

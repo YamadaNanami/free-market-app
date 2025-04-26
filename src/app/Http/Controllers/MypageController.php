@@ -34,11 +34,8 @@ class MypageController extends Controller
             // ユーザ情報を取得
             $user = User::find($id);
 
-            // ユーザーが購入した商品のidを取得
-            $itemIds = Purchase::where('user_id', $id)->get('item_id');
-
-            // 購入した商品の情報を取得する
-            $items = Item::whereIn('id', $itemIds)->get();
+            // ユーザーが購入した商品の情報を取得する
+            $items = User::find($id)->items;
 
             return view('mypage', compact('page','user', 'items'));
         }

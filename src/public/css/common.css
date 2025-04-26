@@ -1,8 +1,6 @@
 /* 共通部分 */
 .page-content{
-    /* max-width:1400px; */
     margin:150px auto 30px;
-    /* padding:0 2%; */
 }
 
 .page-title{
@@ -11,15 +9,15 @@
     margin-bottom:50px;
 }
 
+.last-input-msg{
+    margin: -80px 0 80px;
+}
+
 .error-msg{
     margin:-30px 0 30px;
     text-align: left;
     color: red;
     font-size: 20px;
-}
-
-.last-input-msg{
-    margin: -80px 0 80px;
 }
 
 a{

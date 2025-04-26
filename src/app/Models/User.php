@@ -53,4 +53,17 @@ class User extends Authenticatable
     public function items(){
         return $this->belongsToMany(Item::class, 'purchases')->withTimestamps();
     }
+
+    public function comments(){
+        return $this->belongsToMany(Item::class, 'comments')->withPivot('comment')->withTimestamps();
+    }
+
+    public function like(){
+        return $this->belongsToMany(Item::class, 'item_user_like')->withTimestamps();
+    }
+
+    public function address(){
+        return $this->belongsToMany(Item::class, 'item_user_address')->withPivot('post','address','building')->withTimestamps();
+    }
+
 }

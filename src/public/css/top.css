@@ -20,18 +20,22 @@
     left:0;
 }
 
-.list-item{
+.tab-txt{
     border:none;
     background: none;
     padding: 0;
-    font-size:20px;
+    font-size:24px;
     font-weight:700;
     color:#5F5F5F;
     cursor: pointer;
 }
 
-.list-item:first-of-type{
+.tab-txt:first-of-type{
     margin-right: 60px;
+}
+
+input[type=radio]:checked + .tab-txt{
+    color:#FF0000;
 }
 
 .item-list{
@@ -49,18 +53,16 @@
     width:100%;
     aspect-ratio: 1/1;
     margin-bottom:10px;
-    /* 画像入れれたら以下は削除（見た目調整用に記載） */
-    background-color:#5F5F5F;
 }
 
 .item-img{
-    /* 画像入れれたらCSS調整する */
     width:100%;
     height:auto;
     object-fit: cover;
 }
 
 .item-name{
+    margin: 0;
     font-size:25px;
     color:#000;
 }

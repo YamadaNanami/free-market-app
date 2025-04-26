@@ -7,24 +7,28 @@
     margin: 0 auto;
     display: grid;
     grid-auto-flow: column;
-    column-gap: 80px
+    justify-content: space-between;
 }
 
-.item-img{
+.img-wrap{
     width:570px;
     height: auto;
     aspect-ratio: 1/1;
     margin-top:36px;
-    /* 画像を入れられたら下記削除予定 */
-    background-color: #f5f5f5;
+}
+
+.item-img{
+    width:100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .detail-area{
     text-align: left;
+    width: 540px;
 }
 
 .detail-sec{
-    max-width: 570px;
     margin-bottom: 50px;
 }
 
@@ -56,7 +60,68 @@
     font-size: 30px;
 }
 
-/* いいね、コメントあとでやる */
+.icon-flex{
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+/*いいねアイコンのCSSここに書く*/
+.like-form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 60px;
+}
+
+.like-btn{
+    width: 40px;
+    height: auto;
+    aspect-ratio: 1/1;
+    padding: 0;
+    border: none;
+    background: none;
+}
+
+.active{
+    filter: invert(47%) sepia(86%) saturate(2384%) hue-rotate(330deg) brightness(105%) contrast(112%);
+}
+
+/* .like-btn{
+    width: 40px;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    background-image: url('../storage/img/icon-like.svg');
+}
+
+.link-btn.action{
+    color: currentColor;
+} */
+
+.pieces{
+    margin-top: 5px;
+}
+
+.cmt-link{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.cmt-icon{
+    width: 40px;
+    aspect-ratio: 1/1;
+}
+
+.cmt-img{
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
 
 .purchase-form{
     width:100%;
@@ -86,10 +151,12 @@
 .detail-title{
     margin: 0 50px 0 0;
     font-size: 24px;
+    white-space: nowrap;
 }
 
 .category-area{
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: flex-start;
 }
@@ -114,13 +181,10 @@
 }
 
 .user-img{
-    display: block;
     width: 70px;
     border-radius: 50%;
     aspect-ratio: 1/1;
     color: transparent;
-    /* 下記は不要かも */
-    background-color: #D9D9D9;
 }
 
 .user-name{
@@ -146,6 +210,11 @@
 .form-input{
     width: 100%;
     font-size: 20px;
+    padding: 20px;
+}
+
+.error-msg{
+    margin:0;
 }
 
 .cmt-btn{
@@ -167,11 +236,16 @@
 
     .grid-wrap{
         grid-auto-flow: row;
+        justify-content: center;
     }
 
-    .item-img{
-        max-width: 500px;
+    .img-wrap{
+        width: 600px;
         margin:20px auto 40px;
+    }
+
+    .detail-area{
+        width: 600px;
     }
 
     .detail-sec{

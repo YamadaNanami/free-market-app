@@ -1,4 +1,4 @@
-.purchase-form{
+.purchase-wrap{
     max-width: 1200px;
     margin: 0 auto;
     display: grid;
@@ -20,8 +20,6 @@
     display: block;
     width: 180px;
     aspect-ratio: 1/1;
-    /* 画像を入れられたら下記削除予定 */
-    background-color: #D9D9D9;
 }
 
 .item-txt{
@@ -109,7 +107,7 @@
 }
 
 @media screen and (max-width: 850px){
-    .purchase-form{
+    .purchase-wrap{
         max-width: 680px;
         grid-template-columns: auto;
     }

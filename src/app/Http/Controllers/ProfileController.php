@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
-use App\Models\Profile;
 
 class ProfileController extends Controller
 {
@@ -15,11 +14,13 @@ class ProfileController extends Controller
         $id = Auth::id();
         $profile = User::with('profile')->find($id);
         if(!$profile){
+            // このif文いる？
             return view('profile');
         };
         return view('profile', compact('profile'));
     }
 
+    //UpdateUserProfileInformation.phpを使って更新する？後で調べる
     public function update(AddressRequest $request){
         // 対象のレコードを取得する
         $profile = User::with('profile')->find(Auth::id());
