@@ -23,15 +23,17 @@
 
 2. 以下のファイルに設定を記述する
 
-   - Docker-compose.yml の作成
+   - docker-compose.yml の作成
 
-   - Nginx の設定
+     - Nginx の設定
 
-   - PHP の設定
+     - PHP の設定
 
-   - My SQL の設定
+     - My SQL の設定
 
-   - phpMyAdmin の設定
+     - phpMyAdmin の設定
+
+     - MailHog の設定
 
 3. docker-compose up -d --build
 
@@ -49,7 +51,13 @@
 
 6. echo Carbon\Carbon::now()
 
-7. env ファイルの環境変数を変更
+7. .env ファイルに記載されている以下の環境変数を変更
+
+   - DB_HOST
+   - DB_DATABASE
+   - DB_USERNAME
+   - DB_PASSWORD
+   - MAIL_FROM_ADDRESS
 
 8. php artisan key:generate
 
@@ -68,3 +76,4 @@
 
 - 開発環境：http://localhost/
 - phpMyAdmin：http://localhost:8080/
+- MailHog：http://localhost:8025/
