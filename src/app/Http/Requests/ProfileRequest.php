@@ -24,8 +24,7 @@ class ProfileRequest extends FormRequest
     public function rules()
     {
         return [
-            //画像の拡張子のルールを記載する
-            'img_url' => ['']
+            'img_url' => ['mimes:jpeg,png','extensions:jpeg,png']
         ];
     }
 }

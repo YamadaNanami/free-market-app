@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Routing\Pipeline;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Fortify\Actions\AttemptToAuthenticate;
 use Laravel\Fortify\Actions\CanonicalizeUsername;
 use Laravel\Fortify\Actions\EnsureLoginIsNotThrottled;
@@ -58,9 +59,19 @@ class LoginController extends Controller
      */
     public function store(LoginRequest $request)
     {
-        return $this->loginPipeline($request)->then(function ($request) {
-            return app(LoginResponse::class);
-        });
+        if(Auth::attempt($request->only('email','password'))){
+
+            $user = Auth::user();
+
+            // メール認証済みかを判定する
+            if(is_null($user->email_verified_at)){
+                return redirect()->route('verification.notice');
+            }
+
+            return $this->loginPipeline($request)->then(function ($request) {
+                return app(LoginResponse::class);
+            });
+        }
     }
 
     /**

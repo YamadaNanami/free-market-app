@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Contracts\LogoutResponse;
 use Laravel\Fortify\Contracts\LoginResponse;
+use Laravel\Fortify\Contracts\RegisterResponse;
 use Laravel\Fortify\Http\Controllers\RegisteredUserController;
 use App\Http\Controllers\RegisterController;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
@@ -26,6 +27,16 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        //ユーザ登録処理とログイン処理をカスタマイズしたクラスにバインドする（向き先変更）
+        $bindings = [
+            RegisteredUserController::class => RegisterController::class,
+            AuthenticatedSessionController::class => LoginController::class
+        ];
+
+        foreach($bindings as $abstract => $concrete){
+            $this->app->singleton($abstract, $concrete);
+        }
+
         // ログアウト後にログイン画面に遷移する
         $this->app->instance(LogoutResponse::class, new class implements LogoutResponse {
             public function toResponse($request)
@@ -42,16 +53,13 @@ class FortifyServiceProvider extends ServiceProvider
             }
         });
 
-
-        //ユーザ登録処理とログイン処理をカスタマイズしたクラスにバインドする（向き先変更）
-        $bindings = [
-            RegisteredUserController::class => RegisterController::class,
-            AuthenticatedSessionController::class => LoginController::class
-        ];
-
-        foreach($bindings as $abstract => $concrete){
-            $this->app->singleton($abstract, $concrete);
-        }
+        //会員登録直後にメール認証誘導画面へ遷移する
+        $this->app->instance(RegisterResponse::class, new class implements RegisterResponse {
+            public function toResponse($request)
+            {
+                return redirect()->route('verification.notice');
+            }
+        });
     }
 
     /**
@@ -60,7 +68,7 @@ class FortifyServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Fortify::createUsersUsing(CreateNewUser::class);
-        Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
+        // Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
 
         Fortify::registerView(function () {
             return view('auth.register');
@@ -76,8 +84,5 @@ class FortifyServiceProvider extends ServiceProvider
             return Limit::perMinute(10)->by($email . $request->ip());
         });
 
-        // RateLimiter::for('two-factor', function (Request $request) {
-        //     return Limit::perMinute(5)->by($request->session()->get('login.id'));
-        // });
     }
 }

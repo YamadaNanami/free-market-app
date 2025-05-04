@@ -1,11 +1,14 @@
 <?php
 
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MypageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\SellController;
 use App\Http\Controllers\TopController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,8 +22,29 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// メール認証誘導画面の表示
+Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+})->middleware('auth')->name('verification.notice');
+
+// メール確認のハンドラ
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+
+    return redirect('/mypage/profile');
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+// 確認メールの再送
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+
+    return back()->with('message', 'Verification link sent!');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
+// トップ画面表示
 Route::get('/', [TopController::class, 'index'])->name('top.index');
 
+// 商品検索
 Route::get('/search', [TopController::class, 'saveKeyword']);
 
 // 商品詳細画面の表示
@@ -35,6 +59,9 @@ Route::middleware('auth')->group(function () {
 
         // プロフィール設定画面の表示
         Route::get('profile', [ProfileController::class, 'index'])->name('profile.index');
+
+        // プロフィールの登録処理
+        Route::post('profile', [ProfileController::class, 'store']);
 
         // プロフィールの更新処理
         Route::patch('profile', [ProfileController::class, 'update']);

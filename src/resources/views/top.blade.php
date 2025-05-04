@@ -8,7 +8,6 @@
 
 @section('content')
 <div class="content-header">
-    <!-- 文字色の処理後で追加する -->
     <form action="/" method="get" class="item-list-form">
         <input type="radio" onchange="submit(this.form)" name="page" value="" id="rec" hidden @if($currentTab == 'default') checked @endif>
         <label for="rec" class="tab-txt">おすすめ</label>
