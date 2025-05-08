@@ -41,9 +41,8 @@ class PurchaseController extends Controller
     }
 
     public function selectPayment(Request $request){
-        // （これから対応する）画面遷移、異なる商品の購入画面が表示された際にここで追加したsessionを削除するようにする
-        session()->put('payment', $request->payment);
-        return redirect()->back();
+        $payment = $request->payment;
+        return redirect()->back()->with('payment',$payment);
     }
 
     public function edit($item_id){

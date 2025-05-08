@@ -19,8 +19,7 @@
     width: 150px;
     height: 150px;
     border-radius: 50%;
-    background-color: #D9D9D9;
-    color: transparent;
+    object-fit: cover;
 }
 
 .input-name{
@@ -99,10 +98,9 @@ input[type=radio]:checked + .tab-txt{
 }
 
 .item-img {
-    /* 画像入れれたらCSS調整する */
     width: 100%;
-    height: auto;
-    object-fit: cover;
+    height: 100%;
+    object-fit: contain;
 }
 
 .item-name {

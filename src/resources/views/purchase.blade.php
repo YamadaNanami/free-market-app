@@ -18,7 +18,8 @@
         </section>
         <section class="purchase-sec">
             <h3 class="sec-title">支払い方法</h3>
-            <form action="/purchase/payment" method="get">
+            <form action="/purchase/payment" method="post">
+                @csrf
                 <select onchange="submit(this.form)" name="payment" class="payment">
                     <option disabled selected>選択してください</option>
                     <option value="cvs" {{ session()->get('payment') =='cvs'?'selected':'' }}>コンビニ払い</option>

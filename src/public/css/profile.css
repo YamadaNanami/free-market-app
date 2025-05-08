@@ -2,12 +2,9 @@
     text-align: center;
 }
 
-.edit-form{
+.img-form{
     width: 680px;
     margin: 0 auto;
-}
-
-.update-img{
     display: flex;
     align-items: center;
     margin-bottom: 80px;
@@ -17,8 +14,7 @@
     width: 150px;
     height: 150px;
     border-radius: 50%;
-    background-color:#D9D9D9;
-    color: transparent;
+    object-fit: cover;
 }
 
 .img-label{
@@ -35,6 +31,11 @@
 
 .input-img{
     display: none;
+}
+
+.edit-form{
+    width: 680px;
+    margin: 0 auto;
 }
 
 .form-label {

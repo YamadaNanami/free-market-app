@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AddressRequest;
-use App\Models\User;
+use App\Http\Requests\ProfileRequest;
 use App\Models\Profile;
-use Illuminate\Http\Request;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ProfileController extends Controller
 {
@@ -26,18 +27,33 @@ class ProfileController extends Controller
         return view('profile', compact('profile','hasProfile'));
     }
 
+    public function saveTempImg(ProfileRequest $request){
+        $tempImg = $request->file('image');
+
+        // 画像名を一意にする
+        $imgName = Str::uuid().$tempImg->getClientOriginalName();
+        $tempImg->storeAs('public/img/temp', $imgName);
+
+        return redirect()->route('profile.index')->with('imgName',$imgName);
+    }
+
     public function store(AddressRequest $request){
-        // dd('store',$request);
+        $imgName = session()->get('imgName') ?? '';
+
         // プロフィール情報登録用の配列を作成する
         $profile = [
             'user_id' => Auth::id(),
-            // 'img_url' => $request->$img_url,
+            'img_url' => $imgName ? 'profile_img/'.$imgName : null,
             'post' => $request->post,
             'address' => $request->address,
             'building' => $request->building,
         ];
 
         Profile::create($profile);
+
+        if($imgName){
+            Storage::move('public/img/temp/' . $imgName, 'public/img/profile_img/' . $imgName);
+        }
 
         return redirect()->route('top.index');
     }
@@ -54,6 +70,12 @@ class ProfileController extends Controller
             $profile->profile->post = $request->post;
             $profile->profile->address = $request->address;
             $profile->profile->building = $request->building;
+
+            if($imgName = session('imgName')){
+                Storage::move('public/img/temp/' . $imgName, 'public/img/profile_img/' . $imgName);
+                $profile->profile->img_url = 'profile_img/' . $imgName;
+            }
+
             $profile->profile->save(); // プロフィール情報を保存
         }
 

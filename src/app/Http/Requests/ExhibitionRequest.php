@@ -23,13 +23,18 @@ class ExhibitionRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'item_name' => ['required'],
-            'description' => ['required','max:255'],
-            'img_url' => ['required','mimes:jpeg,png','extensions:jpeg,png'],
-            'categories' => ['required','array'],
-            'condition' => ['required'],
-            'price' => ['required','integer','min:0','regex:/^[0-9]+$/']
-        ];
+        if($this->has('img_url')){
+            return [
+                'img_url' => ['required','mimes:jpeg,png'],
+            ];
+        }else{
+            return [
+                'item_name' => ['required'],
+                'description' => ['required', 'max:255'],
+                'categories' => ['required', 'array'],
+                'condition' => ['required'],
+                'price' => ['required', 'integer', 'min:0', 'regex:/^[0-9]+$/']
+            ];
+        }
     }
 }

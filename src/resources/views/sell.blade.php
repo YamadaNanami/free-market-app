@@ -8,16 +8,19 @@
 
 @section('content')
 <h2 class="page-title">商品の出品</h2>
-<form action="/sell" method="post" class="sell-form">
+<form action="/sell/img" method="post" enctype="multipart/form-data" class="sell-form">
     @csrf
     <section class="form-sec">
         <h4 class="sub-title">商品画像</h4>
-        <img src="" alt="商品画像" class="img-area">
+        <img src="@if($itemImg = session()->get('itemImg')) {{ asset('storage/img/temp/'.$itemImg) }} @else {{ null }} @endif" alt="商品画像" class="img-area">
         <label for="img-file" class="img-label">
             画像を選択する
-            <input type="file" name="img_url" id="img-file" accept=".jpeg,.png" class="input-img">
+            <input type="file" onchange="submit(this.form)" name="img_url" id="img-file" accept=".jpeg,.png" class="input-img">
         </label>
     </section>
+</form>
+<form action="/sell" method="post" enctype="multipart/form-data" class="sell-form">
+    @csrf
     <section class="form-sec">
         <h3 class="sec-title">商品の詳細</h3>
         <h4 class="sub-title">カテゴリー</h4>

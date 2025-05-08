@@ -60,6 +60,9 @@ Route::middleware('auth')->group(function () {
         // プロフィール設定画面の表示
         Route::get('profile', [ProfileController::class, 'index'])->name('profile.index');
 
+        // プロフィール画像の一時保存
+        Route::post('profile/img', [ProfileController::class, 'saveTempImg']);
+
         // プロフィールの登録処理
         Route::post('profile', [ProfileController::class, 'store']);
 
@@ -70,6 +73,9 @@ Route::middleware('auth')->group(function () {
     Route::group(['prefix' => 'sell'], function () {
         // 出品画面の表示
         Route::get('/', [SellController::class, 'index']);
+
+        // 商品画像の一時保存
+        Route::post('img', [SellController::class, 'saveTempImg']);
 
         // 商品の出品（登録）処理
         Route::post('/', [SellController::class, 'sell']);
@@ -88,7 +94,7 @@ Route::middleware('auth')->group(function () {
         Route::get(':{item_id}', [PurchaseController::class, 'index']);
 
         // 支払い方法の表示
-        Route::get('payment', [PurchaseController::class, 'selectPayment']);
+        Route::post('payment', [PurchaseController::class, 'selectPayment']);
 
         // 送付先住所変更画面の表示
         Route::get('address/:{item_id}', [PurchaseController::class, 'edit'])->name('address.edit');

@@ -8,20 +8,28 @@
 
 @section('content')
 <h2 class="page-title">プロフィール設定</h2>
-@if($hasProfile)
-<form action="/mypage/profile" method="post" class="edit-form" enctype="multipart/form-data">
+<form action="/mypage/profile/img" method="post" enctype="multipart/form-data" class="img-form">
+    @csrf
+    @if(session('imgName'))
+    <img src="{{ asset('storage/img/temp/'.session('imgName')) }}" alt="プロフィール画像" class="img-area">
+    @else
+    <img src="@if(is_null($profile['profile']) || is_null($profile['profile']['img_url'])) {{ asset('storage/img/noImage.png') }} @else{{ asset('storage/img/'.$profile['profile']['img_url']) }}@endif" alt="プロフィール画像" class="img-area">
+    @endif
+    <label for="image" class="img-label">
+        画像を選択する
+        <input type="file" onchange="submit(this.form)" name="image" id="image" accept=".jpeg,.png" class="input-img">
+    </label>
+</form>
+@if($hasProfile == 1)
+<form action="/mypage/profile" method="post" enctype="multipart/form-data" class="edit-form">
     @method('PATCH')
 @else
 <form action="/mypage/profile" method="post" class="edit-form" enctype="multipart/form-data">
 @endif
     @csrf
-    <div class="update-img">
-        <img src="@if(is_null($profile['profile']) || is_null($profile['profile']['img_url']))''@else{{ asset('storage/img/'.$profile['profile']['img_url']) }}@endif" alt="プロフィール画像" class="img-area">
-        <label for="img-file" class="img-label">
-            画像を選択する
-            <input type="file" name="img-file" id="img-file" accept=".jpeg,.png" class="input-img">
-        </label>
-    </div>
+    @if(session('imgName'))
+    {{ session()->flash('imgName',session('imgName'))  }}
+    @endif
     <label for="name" class="form-label">ユーザー名</label>
     <input type="text" name="name" class="form-input" id="name" value="{{ old('name',$profile['name']) }}">
     <label for="post" class="form-label">郵便番号</label>
