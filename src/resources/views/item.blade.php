@@ -21,13 +21,13 @@
                     @csrf
                     <input type="hidden" name="like" value="{{ $like['hasLikedItem'] }}">
                     <button type="submit" class="like-btn">
-                        <img src="{{ asset('storage/img/icon-like.svg') }}" alt="いいねアイコン" class="like-img @if($like['hasLikedItem']) active @endif">
+                        <img src="{{ asset('storage/img/icon-like.svg') }}" alt="いいねアイコン" class="@if($like['hasLikedItem']) active @endif">
                     </button>
                     <p class="pieces">{{ $like['count'] }}</p>
                 </form>
                 <div class="cmt-link">
                     <a href="#cmt-area" class="cmt-icon">
-                        <img src="{{ asset('storage/img/icon-cmt.svg') }}" alt="コメントアイコン" class="cmt-img">
+                        <img src="{{ asset('storage/img/icon-cmt.svg') }}" alt="コメントアイコン">
                     </a>
                     <p class="pieces">{{ $comment['count'] }}</p>
                 </div>
@@ -74,7 +74,7 @@
             @if($comment['status'] == 'has_comments')
             <!-- 商品に対してコメントが存在する時のみ表示させる -->
             <div class="user-img-wrap">
-                <img src="{{ asset('storage/img/'.$comment['user']['profile']['img_url']) }}" alt="プロフィール画像" class="user-img">
+                <img src="@empty($comment['user']['profile']['img_url']) {{ asset('storage/img/noImage.png') }} @else {{ asset('storage/img/'.$comment['user']['profile']['img_url']) }} @endempty" alt="プロフィール画像" class="user-img">
                 <p class="user-name">{{ $comment['user']['name']}}</p>
             </div>
             <p class="cmt">{{ $comment['comment'] }}</p>

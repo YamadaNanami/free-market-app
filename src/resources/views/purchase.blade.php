@@ -22,7 +22,7 @@
                 @csrf
                 <select onchange="submit(this.form)" name="payment" class="payment">
                     <option disabled selected>選択してください</option>
-                    <option value="cvs" {{ session()->get('payment') =='cvs'?'selected':'' }}>コンビニ払い</option>
+                    <option value="konbini" {{ session()->get('payment') =='konbini'?'selected':'' }}>コンビニ払い</option>
                     <option value="card" {{ session()->get('payment') =='card'?'selected':'' }}>カード支払い</option>
             </select>
             </form>
@@ -46,7 +46,7 @@
                 <th class="tb-header">支払い方法</th>
                 <td class="tb-detail">
                     @switch(session()->get('payment'))
-                        @case ('cvs')
+                        @case ('konbini')
                             コンビニ払い
                             @break
                         @case ('card')
@@ -58,8 +58,12 @@
                 </td>
             </tr>
         </table>
-        <form action="" method="post">
+        <form action="{{ route('stripe.checkout',['item_id' => $item['id']]) }}" method="post">
             @csrf
+            <input type="hidden" name="payment" value="{{ session('payment') }}">
+            <input type="hidden" name="address[post]" value="{{ $user['post'] }}">
+            <input type="hidden" name="address[address]" value="{{ $user['address'] }}">
+            <input type="hidden" name="address[building]" value="{{ $user['building'] }}">
             <button type="submit" class="purchase-btn">購入する</button>
         </form>
     </section>

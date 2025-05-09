@@ -17,6 +17,9 @@ class CreatePurchasesTable extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('item_id')->constrained()->cascadeOnDelete();
+            $table->text('post');
+            $table->string('address',255);
+            $table->string('building',255);
             $table->timestamps();
         });
     }

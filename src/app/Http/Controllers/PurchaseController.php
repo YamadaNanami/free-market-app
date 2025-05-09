@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Requests\AddressRequest;
-use Illuminate\Support\Facades\Auth;
 use App\Models\Item;
 use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PurchaseController extends Controller
 {
-    public function index($item_id){
+    public function index($item_id,Request $request){
         $user_id = Auth::id();
         $itemInfo = Item::find($item_id);
 
@@ -22,19 +22,21 @@ class PurchaseController extends Controller
             'img_url'
         ]);
 
-        // 送付先変更が登録されていたらレコードを取得する
-        $address = $itemInfo->address()->where('user_id', $user_id)->first();
-
-        if($address){
-            // 送付先変更が行われた場合
-            $user = [
-                'post' => $address->pivot->post,
-                'address' => $address->pivot->address,
-                'building' => $address->pivot->building
-            ];
-        }else{
+        if(is_null(session('address'))){
             // 初期表示
             $user = User::with('profile')->find($user_id)->profile;
+        }else{
+            // 送付先変更が行われた場合
+            // セッションに保存した送付先住所を取得
+            $address = session('address');
+
+            $user = [
+                'post' => $address['post'],
+                'address' => $address['address'],
+                'building' => $address['building']
+            ];
+
+            // route('stripe.checkout')実行時にaddressをセッションから削除する
         }
 
         return view('purchase',compact('item','user'));
@@ -49,18 +51,17 @@ class PurchaseController extends Controller
         return view('address', compact('item_id'));
     }
 
-    public function store($item_id,AddressRequest $request){
+    public function storeTempAddress($item_id,AddressRequest $request){
         $address = [
             'post' => $request->post,
             'address' => $request->address,
             'building' => $request->building
         ];
 
-        $user = User::find(Auth::id());
-        // user_idとitem_idの組み合わせで重複があった場合は上書きする
-        $user->address()->syncWithoutDetaching([$item_id => $address]);
+        session()->put('address', $address);
 
         return redirect('/purchase/:'.$item_id);
 
     }
+
 }

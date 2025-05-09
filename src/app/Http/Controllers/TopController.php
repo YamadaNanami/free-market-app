@@ -11,17 +11,13 @@ use App\Models\User;
 class TopController extends Controller
 {
     public function index(Request $request){
-        $currentTab = $request->query('page', 'default');
-        // if($currentTab == null){
-        //     $url = URL::current().'?'.http_build_query($request->except('parameter'));
-        // }else{
-        //     $url = URL::current();
-        // }
-        // dd($currentTab);
+        if($request->page == ''){
+            $request->exists('page');
+        }
+        $currentTab = $request->page??'';
 
         // 商品検索
-        $keyword = session()->get('searchKeyword');
-
+        $keyword = session()->get('keyword');
         $query = Item::query();
         $query = Item::itemsSearch($keyword);
 
@@ -30,10 +26,21 @@ class TopController extends Controller
             $user_id = Auth::id();
 
             if($currentTab == 'mylist'){
-                // いいねした商品だけを取得
+                // いいねした商品を取得
                 $user = User::find($user_id);
-                $items = $user->like;
-                // 応用なので後回し（検索状態の維持）
+                $likeItems = $user->like;
+
+                // itemsの配列を作成
+                $items = [];
+
+                foreach($query->get() as $searchItem){
+                    // 検索条件で取得したアイテムからいいねした商品だけを取得
+                    foreach($likeItems as $likeItem){
+                        if($searchItem['id'] == $likeItem['id']){
+                            array_push($items, $likeItem);
+                        }
+                    }
+                }
             }else{
                 // 出品した商品以外を取得
                 $items = $query->whereNotIn('user_id', [$user_id])->get();
@@ -59,10 +66,10 @@ class TopController extends Controller
     }
 
     public function saveKeyword(Request $request){
-        // 検索条件をセッションで保持（タブ切替時にも表示できるように）
+        // 検索条件をセッションに保持する
         $keyword = $request->keyword;
-        session()->put('searchKeyword', $keyword);
+        session()->put('keyword', $keyword);
 
-        return redirect()->route('top.index');
+        return redirect()->back();
     }
 }

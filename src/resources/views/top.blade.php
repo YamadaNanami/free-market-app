@@ -7,22 +7,21 @@
 @endsection
 
 @section('content')
-<div class="content-header">
-    <form action="/" method="get" class="item-list-form">
-        <input type="radio" onchange="submit(this.form)" name="page" value="" id="rec" hidden @if($currentTab == 'default') checked @endif>
+<div class="tab-wrap">
+    <form action="{{ route('top.index') }}" method="get" class="item-list-form">
+        <input type="radio" onchange="submit(this.form)" id="rec" name="page" value="" hidden @empty($currentTab) checked @endempty>
         <label for="rec" class="tab-txt">おすすめ</label>
         <input type="radio" onchange="submit(this.form)" name="page" value="mylist" id="mylist" hidden @if($currentTab == 'mylist') checked @endif>
         <label for="mylist" class="tab-txt">マイリスト</label>
     </form>
 </div>
 
-@if($currentTab == 'mylist' && !Auth::check())
-@endif
+@unless($currentTab == 'mylist' && !Auth::check())
 <ul class="item-list">
     @foreach($items as $item)
     <li class="item">
         <a href="/item/:{{ $item['id'] }}">
-            <div class="item-img-wrap">
+            <div class="img-wrap">
                 <img src="{{ asset('storage/img/'.$item['img_url']) }}" alt="商品画像" class="item-img">
             </div>
             <p class="item-name">{{$item['item_name']}}@if($item['soldOutItemExists']){{ '　Sold' }}@endif</p>
@@ -30,4 +29,5 @@
     </li>
     @endforeach
 </ul>
+@endunless
 @endsection

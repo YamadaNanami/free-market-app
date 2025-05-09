@@ -11,6 +11,9 @@ class Purchase extends Model
 
     protected $fillable = [
         'user_id',
-        'item_id'
+        'item_id',
+        'post',
+        'address',
+        'building'
     ];
 }

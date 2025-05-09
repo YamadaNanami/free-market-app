@@ -29,12 +29,15 @@
 }
 
 .img-area{
-    display: block;
-    width: 400px;
-    height: 300px;
+    width: 350px;
+    height: auto;
+    aspect-ratio: 1/1;
     margin: 0 auto;
     border:1px dashed #5F5F5F;
     color:transparent;
+}
+
+.item-img{
     object-fit: contain;
 }
 

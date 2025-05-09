@@ -34,16 +34,16 @@ class ProfileController extends Controller
         $imgName = Str::uuid().$tempImg->getClientOriginalName();
         $tempImg->storeAs('public/img/temp', $imgName);
 
-        return redirect()->route('profile.index')->with('imgName',$imgName);
+        return redirect()->route('profile.index')->with('userImg',$imgName);
     }
 
     public function store(AddressRequest $request){
-        $imgName = session()->get('imgName') ?? '';
+        $userImg = session()->get('userImg') ?? '';
 
         // プロフィール情報登録用の配列を作成する
         $profile = [
             'user_id' => Auth::id(),
-            'img_url' => $imgName ? 'profile_img/'.$imgName : null,
+            'img_url' => $userImg ? 'profile_img/'.$userImg : null,
             'post' => $request->post,
             'address' => $request->address,
             'building' => $request->building,
@@ -51,8 +51,8 @@ class ProfileController extends Controller
 
         Profile::create($profile);
 
-        if($imgName){
-            Storage::move('public/img/temp/' . $imgName, 'public/img/profile_img/' . $imgName);
+        if($userImg){
+            Storage::move('public/img/temp/' . $userImg, 'public/img/profile_img/' . $userImg);
         }
 
         return redirect()->route('top.index');
@@ -71,9 +71,9 @@ class ProfileController extends Controller
             $profile->profile->address = $request->address;
             $profile->profile->building = $request->building;
 
-            if($imgName = session('imgName')){
-                Storage::move('public/img/temp/' . $imgName, 'public/img/profile_img/' . $imgName);
-                $profile->profile->img_url = 'profile_img/' . $imgName;
+            if($userImg = session('userImg')){
+                Storage::move('public/img/temp/' . $userImg, 'public/img/profile_img/' . $userImg);
+                $profile->profile->img_url = 'profile_img/' . $userImg;
             }
 
             $profile->profile->save(); // プロフィール情報を保存

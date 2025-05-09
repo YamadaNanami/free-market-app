@@ -58,6 +58,9 @@
    - DB_USERNAME
    - DB_PASSWORD
    - MAIL_FROM_ADDRESS
+   - STRIPE_KEY
+   - STRIPE_SECRET
+   - CASHIER_CURRENCY
 
 8. php artisan key:generate
 

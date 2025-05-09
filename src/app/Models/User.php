@@ -6,11 +6,12 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Cashier\Billable;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, Billable;
 
     /**
      * The attributes that are mass assignable.
@@ -60,10 +61,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function like(){
         return $this->belongsToMany(Item::class, 'item_user_like')->withTimestamps();
-    }
-
-    public function address(){
-        return $this->belongsToMany(Item::class, 'item_user_address')->withPivot('post','address','building')->withTimestamps();
     }
 
 }

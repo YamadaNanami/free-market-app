@@ -16,7 +16,6 @@ class ProfileFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'img_url' => $this->faker->imageUrl(),
             'post' => preg_replace('/^(\d{3})(\d{4})$/','$1-$2',$this->faker->postcode()),
             'address' => $this->faker->prefecture().$this->faker->city().$this->faker->streetAddress(),
             'building' => $this->faker->secondaryAddress(),

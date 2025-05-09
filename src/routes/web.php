@@ -6,9 +6,11 @@ use App\Http\Controllers\MypageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\SellController;
+use App\Http\Controllers\StripeController;
 use App\Http\Controllers\TopController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -55,7 +57,7 @@ Route::middleware('auth')->group(function () {
 
     Route::group(['prefix' => 'mypage'], function () {
         // マイページ画面の表示
-        Route::get('/', [MypageController::class, 'index']);
+        Route::get('/', [MypageController::class, 'index'])->name('mypage.index');
 
         // プロフィール設定画面の表示
         Route::get('profile', [ProfileController::class, 'index'])->name('profile.index');
@@ -91,7 +93,7 @@ Route::middleware('auth')->group(function () {
 
     Route::group(['prefix' => 'purchase'], function () {
         // 商品購入画面の表示
-        Route::get(':{item_id}', [PurchaseController::class, 'index']);
+        Route::get(':{item_id}', [PurchaseController::class, 'index'])->name('purchase.index');
 
         // 支払い方法の表示
         Route::post('payment', [PurchaseController::class, 'selectPayment']);
@@ -100,6 +102,13 @@ Route::middleware('auth')->group(function () {
         Route::get('address/:{item_id}', [PurchaseController::class, 'edit'])->name('address.edit');
 
         // 送付先住所変更処理
-        Route::post('address/:{item_id}', [PurchaseController::class, 'store'])->name('address.store');
+        Route::post('address/:{item_id}', [PurchaseController::class, 'storeTempAddress'])->name('address.store');
+
+        // 商品購入処理（stripe)
+        Route::post('/checkout:{item_id}', [StripeController::class, 'checkout'])->name('stripe.checkout');
+
+        // 決済成功時の処理
+        Route::get('/checkout/success', [StripeController::class, 'success'])->name('stripe.success');
+
     });
 });

@@ -35,15 +35,10 @@ class Item extends Model
         return $this->belongsToMany(User::class, 'item_user_like')->withTimestamps();
     }
 
-    public function address(){
-        return $this->belongsToMany(User::class, 'item_user_address')->withPivot('post','address','building')->withTimestamps();
-    }
-
     public function scopeItemsSearch($query,$keyword){
         if(!empty($keyword)){
             $query->where('item_name', 'like', '%' . $keyword . '%');
         }
     }
-
 
 }

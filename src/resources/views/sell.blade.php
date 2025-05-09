@@ -12,7 +12,11 @@
     @csrf
     <section class="form-sec">
         <h4 class="sub-title">商品画像</h4>
-        <img src="@if($itemImg = session()->get('itemImg')) {{ asset('storage/img/temp/'.$itemImg) }} @else {{ null }} @endif" alt="商品画像" class="img-area">
+        <div class="img-area">
+        @if($itemImg = session()->get('itemImg'))
+            <img src="{{ asset('storage/img/temp/'.$itemImg) }}" alt="商品画像" class="item-img">
+        @endif
+        </div>
         <label for="img-file" class="img-label">
             画像を選択する
             <input type="file" onchange="submit(this.form)" name="img_url" id="img-file" accept=".jpeg,.png" class="input-img">

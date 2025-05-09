@@ -14,25 +14,25 @@
     <header class="header">
         <div class="header-wrap">
             <h1 class="page-logo">
-                <a href="/">
+                <a href="/" class="top-link">
                     <img src="{{ asset('storage/img/logo.svg') }}" alt="サイトのロゴ画像" class="logo-img">
                 </a>
             </h1>
             <form action="/search" method="get" class="search-form">
-                <input type="search" name="keyword" class="search-form-input" placeholder="なにをお探しですか？" value="{{ old('keyword',session()->get('searchKeyword')) }}">
+                <input type="search" name="keyword" class="search-form-input" placeholder="なにをお探しですか？" value="{{ old('keyword',session()->get('keyword')) }}">
             </form>
             @if(Auth::check())
             <form action="/logout" method="post" class="form-wrap">
                 @csrf
-                <button type="submit" class="form-btn">ログアウト</button>
+                <input type="submit" value="ログアウト" class="fortify-submit">
             </form>
             @else
             <form action="/login" method="post" class="form-wrap">
                 @csrf
-                <button type="submit" class="form-btn">ログイン</button>
+                <input type="submit" value="ログイン" class="fortify-submit">
             </form>
             @endif
-            <a href="/mypage" class="mypage-btn">マイページ</a>
+            <a href="{{ route('mypage.index') }}" class="mypage-link">マイページ</a>
             <a href="/sell" class="sell-btn">出品</a>
         </div>
     </header>

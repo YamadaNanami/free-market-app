@@ -10,10 +10,10 @@
 <h2 class="page-title">プロフィール設定</h2>
 <form action="/mypage/profile/img" method="post" enctype="multipart/form-data" class="img-form">
     @csrf
-    @if(session('imgName'))
-    <img src="{{ asset('storage/img/temp/'.session('imgName')) }}" alt="プロフィール画像" class="img-area">
+    @if(session('userImg'))
+    <img src="{{ asset('storage/img/temp/'.session('userImg')) }}" alt="プロフィール画像" class="profile-img">
     @else
-    <img src="@if(is_null($profile['profile']) || is_null($profile['profile']['img_url'])) {{ asset('storage/img/noImage.png') }} @else{{ asset('storage/img/'.$profile['profile']['img_url']) }}@endif" alt="プロフィール画像" class="img-area">
+    <img src="@if(is_null($profile['profile']) || is_null($profile['profile']['img_url'])) {{ asset('storage/img/noImage.png') }} @else{{ asset('storage/img/'.$profile['profile']['img_url']) }}@endif" alt="プロフィール画像" class="profile-img">
     @endif
     <label for="image" class="img-label">
         画像を選択する
@@ -27,8 +27,8 @@
 <form action="/mypage/profile" method="post" class="edit-form" enctype="multipart/form-data">
 @endif
     @csrf
-    @if(session('imgName'))
-    {{ session()->flash('imgName',session('imgName'))  }}
+    @if(session('userImg'))
+    {{ session()->flash('userImg',session('userImg'))  }}
     @endif
     <label for="name" class="form-label">ユーザー名</label>
     <input type="text" name="name" class="form-input" id="name" value="{{ old('name',$profile['name']) }}">
