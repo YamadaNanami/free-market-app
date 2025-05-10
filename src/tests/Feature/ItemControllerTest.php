@@ -12,7 +12,7 @@ use Database\Seeders\ProfilesTableSeeder;
 use Illuminate\Database\Seeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
@@ -27,6 +27,9 @@ class ItemControllerTest extends TestCase
     {
         parent::setUp();
 
+        // 外部キー制約を無効化
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+
         // シードデータの作成
         $this->seed([
             ProfilesTableSeeder::class,
@@ -34,6 +37,9 @@ class ItemControllerTest extends TestCase
             ItemsTableSeeder::class,
             CategoryItemTableSeeder::class,
         ]);
+
+        // 外部キー制約を有効化
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         // 共通データの作成
         $this->user = User::with('profile')->first();
@@ -110,26 +116,144 @@ class ItemControllerTest extends TestCase
     }
 
     public function test_store_like(){
-        // 最初から怪しい。。
         $response = $this->actingAs($this->user)
-            ->post(route('like',['item_id' => $this->item->id,'like' => false]));
-
+            ->get(route('item.detail', ['item_id' => $this->item->id]));
         $response->assertStatus(200);
 
-        // データベースを確認
-        $this->assertDatabaseHas('likes', [
-            'item_id' => $$this->item->id,
+        // 商品詳細画面を表示した時点でのいいね数を取得
+        $likeData = $response->viewData('like');
+        $count = $likeData['count'];
+
+        $response = $this->actingAs($this->user)
+            ->post('/item/:'.$this->item->id.'/like',[
+                'like' => ''
+            ]);
+
+        // 更新後のいいね数を再取得
+        $response = $this->actingAs($this->user)
+            ->get(route('item.detail', ['item_id' => $this->item->id]));
+        $newLikeData = $response->viewData('like');
+        $newCount = $newLikeData['count'];
+
+        // いいね数が1増加していることを確認
+        $this->assertEquals($count + 1, $newCount);
+
+        // いいねした商品として登録していることを確認
+        $this->assertDatabaseHas('item_user_like', [
             'user_id' => $this->user->id,
+            'item_id' => $this->item->id
         ]);
     }
 
-    // いいねのテストコードここに書くよ
+    public function test_detach_like(){
+        //テストデータ用にいいねを登録する
+        $this->item->like()->attach($this->user->id);
 
-    public function test_comment_success(){
-        $user = User::with('profile')->first();
+        $response = $this->actingAs($this->user)
+            ->get(route('item.detail', ['item_id' => $this->item->id]));
+        $response->assertStatus(200);
 
-        $response = $this->actingAs($user)
-            ->post(route('comment',['item_id' => 1, 'comment' => 'テストコメント']));
+        // 商品詳細画面を表示した時点でのいいね数を取得
+        $likeData = $response->viewData('like');
+        $count = $likeData['count'];
+
+        $response = $this->actingAs($this->user)
+            ->post('/item/:'.$this->item->id.'/like',[
+                'like' => 'hasLikedItem'
+            ]);
+
+        // 更新後のいいね数を再取得
+        $response = $this->actingAs($this->user)
+            ->get(route('item.detail', ['item_id' => $this->item->id]));
+        $newLikeData = $response->viewData('like');
+        $newCount = $newLikeData['count'];
+
+        // いいね数が1減少していることを確認
+        $this->assertEquals($count - 1, $newCount);
+
+        // いいねの登録が解除されていることを確認
+        $this->assertDatabaseMissing('item_user_like', [
+            'user_id' => $this->user->id,
+            'item_id' => $this->item->id
+        ]);
+    }
+
+    public function test_store_comment_success(){
+        $response = $this->actingAs($this->user)
+            ->get(route('item.detail', ['item_id' => $this->item->id]));
+        $response->assertStatus(200);
+
+        $commentData = $response->viewData('comment');
+        $count = $commentData['count'];
+
+        $response = $this->actingAs($this->user)
+            ->post(route('comment', [
+                'item_id' => $this->item->id,
+                'comment' => 'テストコメント'
+            ]));
+
+        // 再ログインしてコメント数を取得する
+        $response = $this->actingAs($this->user)
+            ->get(route('item.detail', ['item_id' => $this->item->id]));
+        $commentData = $response->viewData('comment');
+        $newCount = $commentData['count'];
+
+        // コメント数が1増減していることを確認する
+        $this->assertEquals($count + 1, $newCount);
+
+        // コメントが登録されていることを確認する
+        $this->assertDatabaseHas('comments', [
+            'item_id' => $this->item->id,
+            'user_id' => $this->user->id,
+            'comment' => 'テストコメント'
+        ]);
+
+    }
+
+    public function test_can_not_store_comment(){
+        $response = $this->get(route('item.detail', ['item_id' => $this->item->id]));
+        $response->assertStatus(200);
+
+        $response = $this->post(route('comment', [
+                'item_id' => $this->item->id,
+                'comment' => 'テストコメント'
+            ]));
+
+        // ログインが必要な操作のため、login画面に遷移されることを確認する
+        $response->assertRedirect('/login');
+    }
+
+    public function test_not_send_without_comment(){
+        $response = $this->actingAs($this->user)
+            ->get(route('item.detail', ['item_id' => $this->item->id]));
+        $response->assertStatus(200);
+
+        $response = $this->actingAs($this->user)
+            ->post(route('comment', [
+                'item_id' => $this->item->id,
+                'comment' => ''
+            ]));
+
+        $errors = session('errors')->getBag('default')->getMessages();
+
+        $this->assertEquals('コメントを入力してください', $errors['comment'][0]);
+    }
+    public function test_not_send_over_comment(){
+        $response = $this->actingAs($this->user)
+            ->get(route('item.detail', ['item_id' => $this->item->id]));
+        $response->assertStatus(200);
+
+        $overComment = "この文章はダミーです。文字の大きさ、量、字間、行間等を確認するために入れています。この文章はダミーです。文字の大きさ、量、字間、行間等を確認するために入れています。この文章はダミーです。文字の大きさ、量、字間、行間等を確認するために入れています。この文章はダミーです。文字の大きさ、量、字間、行間等を確認するために入れています。この文章はダミーです。文字の大きさ、量、字間、行間等を確認するために入れています。この文章はダミーです。文字の大きさ、量、字間、行間等を確認するために入れています。この文章はダミーです";
+
+        $response = $this->actingAs($this->user)
+            ->post(route('comment', [
+                'item_id' => $this->item->id,
+                'comment' => $overComment
+            ]));
+
+        $errors = session('errors')->getBag('default')->getMessages();
+
+        $this->assertEquals('コメントは255字以内で入力してください', $errors['comment'][0]);
     }
 
 }
