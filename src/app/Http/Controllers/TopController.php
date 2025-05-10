@@ -65,7 +65,7 @@ class TopController extends Controller
         return view('top', compact('items','currentTab'));
     }
 
-    public function saveKeyword(Request $request){
+    public function storeTempKeyword(Request $request){
         // 検索条件をセッションに保持する
         $keyword = $request->keyword;
         session()->put('keyword', $keyword);

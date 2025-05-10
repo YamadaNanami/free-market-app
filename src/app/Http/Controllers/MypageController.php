@@ -11,27 +11,27 @@ use App\Models\Purchase;
 class MypageController extends Controller
 {
     public function index(Request $request){
-        $page = $request->page;
+        $tab = $request->tab;
         $id = Auth::id();
 
         // ユーザ情報を取得
         $user = User::with('profile')->find($id);
 
-        if (!$page) {//初期表示
+        if (!$tab) {//初期表示
             // 出品した商品を取得
             $items = Item::where('user_id', $id)->get();
 
             return view('mypage', compact('user', 'items'));
-        }elseif($page == 'sell'){//出品した商品リンク押下時
+        }elseif($tab == 'sell'){//出品した商品リンク押下時
             // 出品した商品を取得
             $items = Item::where('user_id', $id)->get();
 
-            return view('mypage', compact('page','user', 'items'));
-        }elseif($page == 'buy'){//購入した商品リンク押下時
+            return view('mypage', compact('tab','user', 'items'));
+        }elseif($tab == 'buy'){//購入した商品リンク押下時
             // ユーザーが購入した商品の情報を取得する
             $items = User::find($id)->items;
 
-            return view('mypage', compact('page','user', 'items'));
+            return view('mypage', compact('tab','user', 'items'));
         }
     }
 }

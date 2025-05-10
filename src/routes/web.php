@@ -47,7 +47,7 @@ Route::post('/email/verification-notification', function (Request $request) {
 Route::get('/', [TopController::class, 'index'])->name('top.index');
 
 // 商品検索
-Route::get('/search', [TopController::class, 'saveKeyword']);
+Route::get('/search', [TopController::class, 'storeTempKeyword']);
 
 // 商品詳細画面の表示
 Route::get('/item/:{item_id}', [ItemController::class, 'index'])->name('item.detail');
@@ -99,7 +99,7 @@ Route::middleware('auth')->group(function () {
         Route::post('payment', [PurchaseController::class, 'selectPayment']);
 
         // 送付先住所変更画面の表示
-        Route::get('address/:{item_id}', [PurchaseController::class, 'edit'])->name('address.edit');
+        Route::get('address/:{item_id}', [PurchaseController::class, 'editAddress'])->name('address.edit');
 
         // 送付先住所変更処理
         Route::post('address/:{item_id}', [PurchaseController::class, 'storeTempAddress'])->name('address.store');

@@ -4,38 +4,9 @@
 
 ### Docker ビルド
 
-1. ローカル環境で以下構成のディレクトリを作成する
+1. <!-- git clone後で書く -->
 
-   ```
-   .
-   ├── docker
-   │   ├── mysql
-   │   │   ├── data
-   │   │   └── my.cnf
-   │   ├── nginx
-   │   │   └── default.conf
-   │   └── php
-   │   ├── Dockerfile
-   │   └── php.ini
-   ├── docker-compose.yml
-   └── src
-   ```
-
-2. 以下のファイルに設定を記述する
-
-   - docker-compose.yml の作成
-
-     - Nginx の設定
-
-     - PHP の設定
-
-     - My SQL の設定
-
-     - phpMyAdmin の設定
-
-     - MailHog の設定
-
-3. docker-compose up -d --build
+2. docker-compose up -d --build
 
 ### Laravel 環境構築
 
@@ -45,13 +16,13 @@
 
 3. composer create-project "laravel/laravel=8.\*" . --prefer-dist
 
-4. src/config/app.php ファイルの'timezone'を修正する
+4. config/app.php ファイルの'timezone'を修正する
 
 5. php artisan tinker
 
 6. echo Carbon\Carbon::now()
 
-7. .env ファイルに記載されている以下の環境変数を変更
+7. .env ファイル内の下記環境変数を修正または追加する
 
    - DB_HOST
    - DB_DATABASE
@@ -65,6 +36,45 @@
 8. php artisan key:generate
 
 9. php artisan migrate
+
+### 単体テスト準備
+
+1. テスト用 DB の準備
+
+   1. 管理者権限で DB にログインする
+      - mysql -u root -p
+   2. テスト用 DB の作成
+      - CREATE DATABASE demo_test;
+
+2. config/database.php の以下項目を編集する
+
+   - 'database' => 'demo_test',
+   - 'username' => 'root',
+   - 'password' => 'root',
+
+3. テスト用の.env ファイルを作成する
+
+   - cp .env .env.testing
+
+4. .env.testing ファイルの以下項目を編集する
+
+   - APP_ENV=test
+   - APP_KEY=（値を空にする）
+   - DB_DATABASE=demo_test
+   - DB_USERNAME=root
+   - DB_PASSWORD=root
+
+5. テスト用アプリケーションキーを作成する
+
+   - php artisan key:generate --env=testing
+
+6. テスト用テーブルを作成する
+
+   - php artisan migrate --env=testing
+
+7. phpunit.xml の下記項目を編集する
+   - <server name="DB_CONNECTION" value="mysql_test"/>
+   - <server name="DB_DATABASE" value="demo_test"/>
 
 ## 使用技術（実行環境）
 

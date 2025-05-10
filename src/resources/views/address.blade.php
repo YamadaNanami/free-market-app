@@ -11,11 +11,11 @@
 <form action="{{ route('address.store',['item_id' => $item_id]) }}" method="post" class="update-form">
     @csrf
     <label for="post" class="form-label">郵便番号</label>
-    <input type="text" name="post" class="form-input" id="post" value="">
+    <input type="text" name="post" class="form-input" id="post" value="{{ old('post',$address['post']) }}">
     <label for="address" class="form-label">住所</label>
-    <input type="text" name="address" class="form-input" id="address">
+    <input type="text" name="address" class="form-input" id="address" value="{{ old('address',$address['address']) }}">
     <label for="building" class="form-label">建物名</label>
-    <input type="text" name="building" class="form-input" id="building">
+    <input type="text" name="building" class="form-input" id="building" value="{{ old('building',$address['building']) }}">
     <button type="submit" class="update-btn">更新する</button>
 </form>
 @endsection

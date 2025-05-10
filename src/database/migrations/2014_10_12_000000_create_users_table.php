@@ -31,6 +31,12 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('two_factor_secret', 255)->nullable();
+            $table->text('two_factor_recovery_codes')->nullable();
+            $table->string('pm_type', 50)->nullable();
+            $table->string('pm_last_four', 4)->nullable();
+            $table->timestamp('trial_ends_at')->nullable();
+        });
     }
 }

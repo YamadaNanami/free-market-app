@@ -22,9 +22,9 @@
 <section class="profile-sec">
     <div class="content-header">
         <form action="/mypage" method="get" class="item-list-form">
-            <input type="radio" onchange="submit(this.form)" name="page" value="sell" id="sell" hidden checked>
+            <input type="radio" onchange="submit(this.form)" name="tab" value="sell" id="sell" hidden checked>
             <label for="sell" class="tab-txt">出品した商品</label>
-            <input type="radio" onchange="submit(this.form)" name="page" value="buy" id="buy" hidden @isset($page)@if($page == 'buy')checked @endif @endisset>
+            <input type="radio" onchange="submit(this.form)" name="tab" value="buy" id="buy" hidden @isset($tab)@if($tab == 'buy')checked @endif @endisset>
             <label for="buy" class="tab-txt">購入した商品</label>
         </form>
     </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AddressRequest;
 use App\Models\Item;
+use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -47,8 +48,10 @@ class PurchaseController extends Controller
         return redirect()->back()->with('payment',$payment);
     }
 
-    public function edit($item_id){
-        return view('address', compact('item_id'));
+    public function editAddress($item_id){
+        $userId = Auth::id();
+        $address = Profile::where('user_id', $userId)->first();
+        return view('address', compact('item_id','address'));
     }
 
     public function storeTempAddress($item_id,AddressRequest $request){

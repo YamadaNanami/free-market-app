@@ -9,15 +9,15 @@
     margin-bottom:50px;
 }
 
-.last-input-msg{
-    margin: -80px 0 80px;
-}
-
 .error-msg{
     margin:-30px 0 30px;
     text-align: left;
     color: red;
     font-size: 20px;
+}
+
+.last-input-msg{
+    margin: -80px 0 80px;
 }
 
 a{
