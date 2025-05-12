@@ -11,10 +11,7 @@ use App\Models\User;
 class TopController extends Controller
 {
     public function index(Request $request){
-        if($request->page == ''){
-            $request->exists('page');
-        }
-        $currentTab = $request->page??'';
+        $currentTab = $request->query('page', ''); // 存在しない場合は空文字列
 
         // 商品検索
         $keyword = session()->get('keyword');

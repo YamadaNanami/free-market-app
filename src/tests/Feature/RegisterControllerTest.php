@@ -9,6 +9,7 @@ class RegisterControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    /* No.1 */
     public function test_registration_fails_without_name()
     {
         $this->post('/register', [
@@ -78,15 +79,16 @@ class RegisterControllerTest extends TestCase
 
     public function test_registration_success()
     {
-        $this->post('/register', [
+        $response = $this->post('/register', [
             'name' => '山田　太郎',
             'email' => 'test@example.com',
             'password' => 'password',
             'password_confirmation' => 'password'
         ]);
 
-        $response = $this->post('/login');
-        // $response->assertStatus(200);
+        $this->assertDatabaseHas('users', ['email' => 'test@example.com']);
+
+        $response->assertRedirect('auth.login');
     }
 
 }

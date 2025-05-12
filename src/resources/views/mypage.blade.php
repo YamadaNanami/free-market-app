@@ -7,9 +7,6 @@
 @endsection
 
 @section('content')
-@if(session('message'))
-<p>{{ session('message') }}</p>
-@endif
 <section class="profile-sec">
     <div class="profile-wrap">
         <img src="@if(is_null($user['profile']) || is_null($user['profile']['img_url'])) {{ asset('storage/img/noImage.png') }} @else{{ asset('storage/img/'.$user['profile']['img_url']) }}@endif" alt="プロフィール画像" class="img-area">

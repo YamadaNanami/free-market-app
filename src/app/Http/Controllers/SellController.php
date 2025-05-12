@@ -19,7 +19,7 @@ class SellController extends Controller
 
     public function saveTempImg(ExhibitionRequest $request){
         if($oldImg = session()->get('itemImg')){
-            // セッションとtempディレクトリに保存済みの場合は削除する
+            // 画像を選び直した場合は、前に選択した画像の情報をセッションとTempディレクトリから削除する
             Storage::disk('public')->delete('img/temp/' . $oldImg);
             session()->forget('itemImg');
         }
@@ -42,7 +42,7 @@ class SellController extends Controller
         $itemImg = session()->get('itemImg');
 
         if(!$itemImg){
-            // 商品画像のバリデーションチェックはsaveTempImgで実施するため、ここで値があるかだけ確認する
+            // 商品画像のバリデーションチェックはsaveTempImgで実施するため、ここでは値があるかだけ確認する
             return redirect()->back()->withInput();
         }
 

@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\ItemController;
-use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MypageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PurchaseController;
@@ -74,7 +73,7 @@ Route::middleware('auth')->group(function () {
 
     Route::group(['prefix' => 'sell'], function () {
         // 出品画面の表示
-        Route::get('/', [SellController::class, 'index']);
+        Route::get('/', [SellController::class, 'index'])->name('sell.index');
 
         // 商品画像の一時保存
         Route::post('img', [SellController::class, 'saveTempImg']);

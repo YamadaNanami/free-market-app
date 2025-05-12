@@ -6,7 +6,6 @@ use App\Models\User;
 use Database\Seeders\ProfilesTableSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class ProfileControllerTest extends TestCase

@@ -3,17 +3,13 @@
 namespace Tests\Feature;
 
 use App\Models\Item;
-use App\Models\Profile;
 use App\Models\User;
 use Database\Seeders\CategoriesTableSeeder;
 use Database\Seeders\CategoryItemTableSeeder;
 use Database\Seeders\ItemsTableSeeder;
 use Database\Seeders\ProfilesTableSeeder;
-use Illuminate\Database\Seeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class ItemControllerTest extends TestCase
@@ -46,6 +42,7 @@ class ItemControllerTest extends TestCase
         $this->item = Item::with('categories')->first();
     }
 
+    /* No.7 */
     public function test_item_detail(){
         $expectedItem = Item::with('categories')->find($this->item->id);
 
@@ -115,6 +112,7 @@ class ItemControllerTest extends TestCase
         $this->assertEquals($firstCmt['comment'], $viewCmt['comment']);
     }
 
+    /* No.8 */
     public function test_store_like(){
         $response = $this->actingAs($this->user)
             ->get(route('item.detail', ['item_id' => $this->item->id]));
@@ -143,6 +141,9 @@ class ItemControllerTest extends TestCase
             'user_id' => $this->user->id,
             'item_id' => $this->item->id
         ]);
+
+        // hasLikedItemがtrueであることを確認（いいねアイコンの色が変化するクラスを付与する条件）
+        $this->assertEquals('hasLikedItem', true);
     }
 
     public function test_detach_like(){
@@ -178,6 +179,7 @@ class ItemControllerTest extends TestCase
         ]);
     }
 
+    /* No. 9 */
     public function test_store_comment_success(){
         $response = $this->actingAs($this->user)
             ->get(route('item.detail', ['item_id' => $this->item->id]));

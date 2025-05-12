@@ -68,10 +68,10 @@ class LoginController extends Controller
                 return redirect()->route('verification.notice');
             }
 
-            return $this->loginPipeline($request)->then(function ($request) {
-                return app(LoginResponse::class);
-            });
         }
+        return $this->loginPipeline($request)->then(function ($request) {
+            return app(LoginResponse::class);
+        });
     }
 
     /**

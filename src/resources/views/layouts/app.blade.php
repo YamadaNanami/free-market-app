@@ -36,7 +36,7 @@
             </form>
             @endif
             <a href="{{ route('mypage.index') }}" class="mypage-link">マイページ</a>
-            <a href="/sell" class="sell-btn">出品</a>
+            <a href="{{ route('sell.index') }}" class="sell-btn">出品</a>
         </div>
     </header>
 

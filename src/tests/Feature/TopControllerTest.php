@@ -35,10 +35,9 @@ class TopControllerTest extends TestCase
     }
 
 
+    /* No.4 */
     public function test_item_get_all(){
         $expectedItems = $this->item;
-
-        dd($expectedItems->id);
 
         $response = $this->get(route('top.index'));
         $response->assertStatus(200);
@@ -104,13 +103,16 @@ class TopControllerTest extends TestCase
         // $this->assertEquals($expectedItems->pluck('id')->sort()->values(), $viewItems->pluck('id')->sort()->values());
     }
 
+    /* No.5 */
+
+    /* No.6 */
     public function test_search_items(){
         $response = $this->get('/search',['keyword' => '靴']);
         $response->assertRedirectContains('/');
 
         $searchItems = Item::itemsSearch('靴');
 
-        // ↓ここエラー
+        // ここエラー
         $viewItems = $response->get('items');
 
         $this->assertCount($searchItems->count(), $viewItems);

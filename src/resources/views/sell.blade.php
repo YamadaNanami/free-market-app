@@ -8,7 +8,7 @@
 
 @section('content')
 <h2 class="page-title">商品の出品</h2>
-<form action="/sell/img" method="post" enctype="multipart/form-data" class="sell-form">
+<form action="/sell/img" method="post" enctype="multipart/form-data" class="sell-form" novalidate>
     @csrf
     <section class="form-sec">
         <h4 class="sub-title">商品画像</h4>

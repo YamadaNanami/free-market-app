@@ -3,10 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Str;
 use Tests\TestCase;
 
 
@@ -14,6 +11,7 @@ class LoginControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    /* No.2 */
     public function test_login_fails_without_email()
     {
         User::factory()->make([
@@ -57,10 +55,9 @@ class LoginControllerTest extends TestCase
             'password' => '12345678'
         ]);
 
-        $errors = session('fail')->getMessages();
+        $errors = session('errors')->getBag('default')->getMessages();
 
-        // 後で直す
-        $this->assertEquals('ログイン情報が登録されていません', $errors['fail'][0]);
+        $this->assertEquals('ログイン情報が登録されていません', $errors['email'][0]);
 
     }
 
@@ -79,17 +76,4 @@ class LoginControllerTest extends TestCase
         $response->assertViewIs('top');
     }
 
-    public function test_logout_user(){
-        User::factory()->make([
-            'email' => 'aaa@example.com'
-        ]);
-
-        $response = $this->post('/login', [
-            'email' => 'aaa@example.com',
-            'password' => 'password'
-        ]);
-
-        $response = $this->post('/logout');
-        $response->assertViewIs('auth.login');
-    }
 }

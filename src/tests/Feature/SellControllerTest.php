@@ -57,13 +57,13 @@ class SellControllerTest extends TestCase
         // テスト用ダミーを作成
         Storage::disk('public')->put('img/temp/noImage.png', 'dummy');
 
-        $response = $this->withSession(['itemImg' => 'noImage.png'])
-            ->actingAs($this->user)
+        $response = $this->actingAs($this->user)
+            ->withSession(['itemImg' => 'noImage.png'])
             ->post('/sell', $requestData);
 
         $response->assertRedirect('mypage');
 
-        //DBへの登録テスト
+        //DBに商品が登録されていることを確認する
         $this->assertDatabaseHas('items', [
             'condition' => 1,
             'item_name' => 'テスト商品',
@@ -71,6 +71,7 @@ class SellControllerTest extends TestCase
             'price' => 100,
         ]);
 
+        // DBに商品とカテゴリーの紐付けができていることを確認する
         $item = Item::where('item_name', 'テスト商品')->first();
         $this->assertDatabaseHas('category_item', [
                 'item_id'     => $item->id,

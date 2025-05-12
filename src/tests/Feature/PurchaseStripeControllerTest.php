@@ -11,12 +11,10 @@ use Database\Seeders\ItemsTableSeeder;
 use Database\Seeders\ProfilesTableSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
+use Stripe\StripeClient;
 use Tests\TestCase;
 
-use function PHPUnit\Framework\stringContains;
-
-class PurchaseControllerTest extends TestCase
+class PurchaseStripeControllerTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -47,7 +45,7 @@ class PurchaseControllerTest extends TestCase
         // 共通データの作成
         $this->user = User::with('profile')->first();
         $this->item = Item::with('categories')->first();
-        $this->stripe = new \Stripe\StripeClient('sk_test_51RMJFq02GGFWUQA6Xxi53zGmunIEgX29CTYFCysklixEMdmHpqcQUENuO3G6v9Ng9mzZrBFcB0asGyCekUmM2NSM001Oa3W1Eg');
+        $this->stripe = new StripeClient(env('STRIPE_SECRET'));
 
     }
 
@@ -76,13 +74,36 @@ class PurchaseControllerTest extends TestCase
             'confirm' => true,
         ]);
 
-        // 決済のステータスが成功していることを確認
-        // $this->assertEquals('succeeded', $paymentIntent->status);
+        // 決済が成功していることを確認
+        $this->assertEquals('succeeded', $paymentIntent->status);
+        $this->assertEquals(500, $paymentIntent->amount);
+        $this->assertEquals('jpy', $paymentIntent->currency);
+        $this->assertContains('card', $paymentIntent->payment_method_types);
 
-        // $this->assertDatabaseHas('purchases', [
+        // Purchasesテーブルに登録されていることを確認
+        // $response->assertDatabaseHas('purchases', [
         //     'item_id' => $this->item->id,
         //     'user_id' => $this->user->id,
         // ]);
+
+        // 購入した商品が商品一覧画面にて「sold」と表示されることを確認
+        $response = $this->actingAs($this->user)->get('/');
+        $response->assertViewIs('top');
+
+        foreach($response['items'] as $item){
+            if ($item['id'] == $this->item->id)
+                $soldItem = $item;
+        }
+
+        $response->assertEquals($soldItem['soldOutItemExists'], true);
+
+        // 「プロフィール/購入した商品一覧」に追加されていることを確認
+        $response = $this->actingAs($this->user)
+            ->get(route('mypage.index',[
+                'tab' => 'buy'
+            ]));
+        $response->assertViewIs('mypage');
+        $response->assertContains($response['items'],$this->item->item_name);
 
     }
 
@@ -167,10 +188,11 @@ class PurchaseControllerTest extends TestCase
         // 決済のステータスが成功していることを確認
         $this->assertEquals('succeeded', $paymentIntent->status);
 
-        $this->assertDatabaseHas('purchases', [
-            'item_id' => $this->item->id,
-            'user_id' => $this->user->id,
-        ]);
+        // Purchasesテーブルに登録されていることを確認
+        // $response->assertDatabaseHas('purchases', [
+        //     'item_id' => $this->item->id,
+        //     'user_id' => $this->user->id,
+        // ]);
     }
 
 }

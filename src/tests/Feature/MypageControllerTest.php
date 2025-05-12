@@ -3,14 +3,13 @@
 namespace Tests\Feature;
 
 use App\Models\Item;
+use App\Models\Purchase;
 use App\Models\User;
 use Database\Seeders\CategoryItemTableSeeder;
 use Database\Seeders\ItemsTableSeeder;
 use Database\Seeders\ProfilesTableSeeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use PhpParser\Node\Stmt\Echo_;
 use Tests\TestCase;
 
 class MypageControllerTest extends TestCase
@@ -43,11 +42,12 @@ class MypageControllerTest extends TestCase
         $this->items = Item::with('categories')->get();
     }
 
+    /* No.13 */
     public function test_view_profile(){
         // コントローラーの処理
         $response = $this->actingAs($this->user)
             ->get(route('mypage.index'));
-        $response->assertStatus(200);
+        $response->assertViewIs('mypage');
 
         $userInfo = $response['user'];
         $userImg = $userInfo['profile']['img_url'];
@@ -63,15 +63,16 @@ class MypageControllerTest extends TestCase
     public function test_sell_items(){
         // コントローラーの処理
         $response = $this->actingAs($this->user)
-        ->get(route('mypage.index',['page' => 'sell']));
+        ->get(route('mypage.index',['tab' => 'sell']));
         $response->assertStatus(200);
+
         $sellItems = [];
         foreach($response['items'] as $item){
             $sellItems = [
-                'id' => $response['items']['id'],
-                'user_id' => $response['items']['user_id'],
-                'price' => $response['items']['price'],
-                'condition' =>  $response['items']['condition']
+                'id' => $item['id'],
+                'user_id' => $item['user_id'],
+                'price' => $item['price'],
+                'condition' =>  $item['condition']
             ];
         }
 
@@ -90,28 +91,24 @@ class MypageControllerTest extends TestCase
 
     public function test_buy_items(){
         // 購入済み商品のデータ作成
-        $items = $this->items->users()->attach($this->user->pluck('id')->toArray());
-        dd($items);
+        $buyItem = Purchase::make([
+            'user_id' => $this->user->id,
+            'item_id' => $this->items->first()->id
+        ]);
 
         // コントローラーの処理
         $response = $this->actingAs($this->user)
-        ->get(route('mypage.index',['page' => 'buy']));
-        $response->assertStatus(200);
-
-        dd($response['items']);
-        $buyItems = [];
-        foreach($response['items'] as $item){
-            array_push($buyItems, $item['id']);
-        }
+        ->get(route('mypage.index',['tab' => 'buy']));
+        $response->assertViewIs('mypage');
 
         $dbBuyItems = [];
-        foreach($items as $item){
+        foreach($this->items as $item){
             if($item['user_id'] == $this->user->id){
-                array_push($dbBuyItems, $item['id']);
+                array_push($dbBuyItems, $item);
             }
         }
 
-        $this->assertEquals($buyItems, $dbBuyItems);
+        $this->assertEquals($buyItem['item_name'], $dbBuyItems['item_name']);
 
     }
 }
