@@ -37,6 +37,24 @@
 
 9. php artisan migrate
 
+10. Storage/app/publicに以下のディレクトリ構成を作成する
+```
+.
+├── img
+│   ├── item_img
+│   ├── profile_img
+└── └── temp
+```
+11. 10で作成したimgディレクトリ内に以下のimgディレクトリ内の画像を格納する
+```
+.
+├── docker
+├── img ←画像が格納されている対象のディレクトリ
+├── src
+├── README.md
+└── docker-compose.yml
+```
+
 ### 単体テスト準備
 
 1. テスト用 DB の準備
