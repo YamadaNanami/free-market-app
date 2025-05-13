@@ -4,7 +4,7 @@
 
 ### Docker ビルド
 
-1. <!-- git clone後で書く -->
+1. git clone git@github.com:HabaNanami/free-market-app.git
 
 2. docker-compose up -d --build
 
