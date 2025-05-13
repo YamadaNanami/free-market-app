@@ -4,7 +4,7 @@
 
 ### Docker ビルド
 
-1. <!-- git clone後で書く -->
+1. git clone git@github.com:HabaNanami/free-market-app.git
 
 2. docker-compose up -d --build
 
@@ -73,8 +73,8 @@
    - php artisan migrate --env=testing
 
 7. phpunit.xml の下記項目を編集する
-   - <server name="DB_CONNECTION" value="mysql_test"/>
-   - <server name="DB_DATABASE" value="demo_test"/>
+   - DB_CONNECTION
+   - DB_DATABASE
 
 ## 使用技術（実行環境）
 
