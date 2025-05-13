@@ -22,7 +22,7 @@
 
 6. echo Carbon\Carbon::now()
 
-7. .env ファイル内の下記環境変数を修正または追加する
+7. .env.example ファイルから.env ファイルを作成し、環境変数を追加・変更する
 
    - DB_HOST
    - DB_DATABASE
