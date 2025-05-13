@@ -73,8 +73,8 @@
    - php artisan migrate --env=testing
 
 7. phpunit.xml の下記項目を編集する
-   - <server name="DB_CONNECTION" value="mysql_test"/>
-   - <server name="DB_DATABASE" value="demo_test"/>
+   - DB_CONNECTION
+   - DB_DATABASE
 
 ## 使用技術（実行環境）
 
