@@ -56,6 +56,7 @@
 ├── README.md
 └── docker-compose.yml
 ```
+12. php artisan storage:link
 
 ### 単体テスト準備
 
