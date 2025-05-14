@@ -12,7 +12,7 @@
 
 1. docker-compose exec php bash
 
-2. composer -v
+2. composer install
 
 3. composer create-project "laravel/laravel=8.\*" . --prefer-dist
 
