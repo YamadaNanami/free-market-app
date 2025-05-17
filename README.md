@@ -24,14 +24,17 @@
 
 7. .env.example ファイルから.env ファイルを作成し、環境変数を追加・変更する
 
-   - DB_HOST
-   - DB_DATABASE
-   - DB_USERNAME
-   - DB_PASSWORD
-   - MAIL_FROM_ADDRESS
-   - STRIPE_KEY
-   - STRIPE_SECRET
-   - CASHIER_CURRENCY
+   追加する環境変数
+   - STRIPE_KEY="StripeのAPIキー　パブリックキー"
+   - STRIPE_SECRET="StripeのAPIキー　シークレットキー"
+   - CASHIER_CURRENCY=jpy
+  
+   変更する環境変数
+   - DB_HOST=mysql
+   - DB_DATABASE=laravel_db
+   - DB_USERNAME=laravel_user
+   - DB_PASSWORD=laravel_pass
+   - MAIL_FROM_ADDRESS="送信元アドレスを設定する"
 
 8. php artisan key:generate
 
@@ -93,9 +96,11 @@
 
    - php artisan migrate --env=testing
 
-7. phpunit.xml の下記項目を編集する
-   - DB_CONNECTION
-   - DB_DATABASE
+7. phpunit.xml の下記のコメントアウトを外す
+```
+   <server name="DB_CONNECTION" value="mysql_test"/>
+   <server name="DB_DATABASE" value="demo_test"/>
+```
 
 ## 使用技術（実行環境）
 
