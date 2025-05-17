@@ -98,8 +98,8 @@
 
 7. phpunit.xml の下記のコメントアウトを外す
 ```
-   <server name="DB_CONNECTION" value="mysql_test"/>
-   <server name="DB_DATABASE" value="demo_test"/>
+<!-- <server name="DB_CONNECTION" value="sqlite"/> -->
+<!-- <server name="DB_DATABASE" value=":memory:"/> -->
 ```
 
 ## 使用技術（実行環境）
