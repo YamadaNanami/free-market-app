@@ -24,19 +24,26 @@
             <form action="/search" method="get" class="search-form">
                 <input type="search" name="keyword" class="search-form-input" placeholder="なにをお探しですか？" value="{{ old('keyword',session()->get('keyword')) }}">
             </form>
-            @if(Auth::check())
-            <form action="/logout" method="post" class="form-wrap">
-                @csrf
-                <input type="submit" value="ログアウト" class="fortify-submit">
-            </form>
-            @else
-            <form action="/login" method="post" class="form-wrap">
-                @csrf
-                <input type="submit" value="ログイン" class="fortify-submit">
-            </form>
-            @endif
-            <a href="{{ route('mypage.index') }}" class="mypage-link">マイページ</a>
-            <a href="{{ route('sell.index') }}" class="sell-btn">出品</a>
+            <nav class="header-nav">
+                <ul class="list-wrap">
+                    <li>
+                        @if(Auth::check())
+                        <form action="/logout" method="post" class="form-wrap">
+                            @csrf
+                            <input type="submit" value="ログアウト" class="fortify-submit">
+                        </form>
+                        @else
+                        <a href="/login" class="nav-link fortify-submit">ログイン</a>
+                        @endif
+                    </li>
+                    <li>
+                        <a href="{{ route('mypage.index') }}" class="nav-link">マイページ</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('sell.index') }}" class="sell-btn">出品</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </header>
 

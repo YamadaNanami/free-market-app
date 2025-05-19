@@ -88,7 +88,7 @@ class RegisterControllerTest extends TestCase
 
         $this->assertDatabaseHas('users', ['email' => 'test@example.com']);
 
-        $response->assertRedirect('auth.login');
+        $response->assertRedirect('/email/verify');
     }
 
 }

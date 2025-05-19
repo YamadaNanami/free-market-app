@@ -100,6 +100,13 @@ img{
     color:#000;
 }
 
+.list-wrap{
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    align-items: center;
+    column-gap: 20px;
+}
+
 .form-wrap{
     text-align: center;
     margin-bottom: 0;
@@ -114,7 +121,7 @@ img{
     cursor: pointer;
 }
 
-.mypage-link{
+.nav-link{
     display: block;
     width:fit-content;
     height: auto;
@@ -152,11 +159,15 @@ img{
         height: 40px;
     }
 
+    .list-wrap{
+        column-gap: 10px;
+    }
+
     .fortify-submit{
         font-size: 18px;
     }
 
-    .mypage-link{
+    .nav-link{
         font-size: 18px;
     }
 
