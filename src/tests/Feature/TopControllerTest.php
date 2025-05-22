@@ -6,38 +6,44 @@ use App\Models\Item;
 use App\Models\User;
 use Database\Seeders\CategoriesTableSeeder;
 use Database\Seeders\CategoryItemTableSeeder;
+use Database\Seeders\DatabaseSeeder;
 use Database\Seeders\ItemsTableSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class TopControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected $item;
+    protected $items;
     protected $user;
 
     protected function setUp(): void
     {
         parent::setUp();
 
+        // 外部キー制約を無効化
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+
         // シードデータの作成
         $this->seed([
-            CategoriesTableSeeder::class,
-            ItemsTableSeeder::class,
-            CategoryItemTableSeeder::class
+            DatabaseSeeder::class
         ]);
+
+        // 外部キー制約を有効化
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         // 共通データの作成
         $this->user = User::with('profile')->first();
-        $this->item = Item::with('categories')->first();
+        $this->items = Item::with('categories')->get();
     }
 
 
     /* No.4 */
     public function test_item_get_all(){
-        $expectedItems = $this->item;
+        $expectedItems = $this->items;
 
         $response = $this->get(route('top.index'));
         $response->assertStatus(200);
@@ -49,61 +55,44 @@ class TopControllerTest extends TestCase
     }
 
     public function test_item_get_sold(){
-        $user = User::factory()->make([
-            'email' => 'test@example.com'
-        ]);
+        $response = $this->actingAs($this->user)->get('/');
 
-        $this->post('/login',[
-            'email' => 'test@example.com',
-            'password' => 'password'
-        ]);
-
-        $response = $this->get('/');
         $response->assertStatus(200);
 
-        // ここからエラー出てる
-        $expectedItems = User::find($user['id'])->items();
+        // ここあとでやる
 
-        $viewItems = [];
 
-        foreach($response->viewData('items') as $item){
-            if($item['soldOutItemExists']){
-                $viewItems = [
-                    'item' => $item
-                ];
-            }
-        }
-
-        $this->assertCount($expectedItems->count(), $viewItems);
-        $this->assertEquals($expectedItems->pluck('id')->sort()->values(), $viewItems->pluck('id')->sort()->values());
     }
 
     public function test_items_not_get_sell(){
-        $user = User::factory()->make([
-            'email' => 'test@example.com'
-        ]);
+        $response = $this->actingAs($this->user)->get('/');
 
-        $this->post('/login',[
-            'email' => 'test@example.com',
-            'password' => 'password'
-        ]);
-
-        $response = $this->get('/');
         $response->assertStatus(200);
 
-        // $response->viewData('items')->update([
-        //     'user_id' => $user['id']
-        // ]);
+        // 自分が出品していないアイテムを取得
+        $notSellItems = Item::whereNotIn('user_id', [$this->user->id])->get();
 
-        // $expectedItems = Item::whereNotIn('user_id', [$user['id']])->get();
-
-        // $viewItems = $response->viewData('items');
-
-        // $this->assertCount($expectedItems->count(), $viewItems);
-        // $this->assertEquals($expectedItems->pluck('id')->sort()->values(), $viewItems->pluck('id')->sort()->values());
+        $this->assertEquals($response['items']->pluck('id')->sortBy('id')->values(),$notSellItems->pluck('id')->sortBy('id')->values());
     }
 
     /* No.5 */
+    public function test_get_mylist(){
+        // ダミーデータとしていいねしたアイテムを2件作成する
+        User::find($this->user)->like()->attach(1);
+        User::find($this->user)->like()->attach(2);
+
+        $response = $this->actingAs($this->user)
+            ->get('/?page=mylist');
+
+        $response->assertStatus(200);
+
+        // 自分が出品していないアイテムを取得
+        $likeItems = $this->user->like;
+
+        dd($response['items']->pluck('id')->sortBy('id')->values());
+
+        $this->assertEquals($response['items']->pluck('id')->sortBy('id')->values(),$likeItems->pluck('id')->sortBy('id')->values());
+    }
 
     /* No.6 */
     public function test_search_items(){

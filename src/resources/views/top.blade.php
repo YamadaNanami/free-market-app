@@ -9,7 +9,7 @@
 @section('content')
 <div class="tab-wrap">
     <form action="{{ route('top.index') }}" method="get" class="item-list-form">
-        <input type="radio" onchange="submit(this.form)" id="rec" name="page" value="" hidden @empty($currentTab) checked @endempty>
+        <input type="radio" onchange="submit(this.form)" id="rec" name="page" value="recommend" hidden @if($currentTab == 'recommend') checked @endif>
         <label for="rec" class="tab-txt">おすすめ</label>
         <input type="radio" onchange="submit(this.form)" name="page" value="mylist" id="mylist" hidden @if($currentTab == 'mylist') checked @endif>
         <label for="mylist" class="tab-txt">マイリスト</label>
