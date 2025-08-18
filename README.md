@@ -22,85 +22,100 @@
 
 6. echo Carbon\Carbon::now()
 
-7. .env.example ファイルから.env ファイルを作成し、環境変数を追加・変更する
+7. .env.example ファイルから.env ファイルを作成し、下記の環境変数を編集する（コメントアウトされている箇所はコメントアウトを解除する）
 
-   追加する環境変数
+   - 追加する環境変数
+     | 項目 | 設定する値 |
+     | ---------------- | -------------------------------------- |
+     | STRIPE_KEY | "Stripe の API キー　パブリックキー" |
+     | STRIPE_SECRET | "Stripe の API キー　シークレットキー" |
+     | CASHIER_CURRENCY | jpy |
 
-   - STRIPE_KEY="Stripe の API キー　パブリックキー"
-   - STRIPE_SECRET="Stripe の API キー　シークレットキー"
-   - CASHIER_CURRENCY=jpy
-
-   変更する環境変数
-
-   - DB_HOST=mysql
-   - DB_DATABASE=laravel_db
-   - DB_USERNAME=laravel_user
-   - DB_PASSWORD=laravel_pass
-   - MAIL_FROM_ADDRESS="送信元アドレスを設定する"
+   - 変更する環境変数
+     | 項目 | 変更前の値 | 変更後の値 |
+     | ----------- | ---------------------- | ------------------ |
+     | DB_HOST | 127.0.0.1 | mysql |
+     | DB_DATABASE | laravel | laravel_db |
+     | DB_USERNAME | root | laravel_user |
+     | DB_PASSWORD | | laravel_pass |
+     | MAIL_FROM_ADDRESS | null | "送信元アドレスを設定する" |
 
 8. php artisan key:generate
 
 9. php artisan migrate
 
-10. Storage/app/public に以下のディレクトリ構成を作成する
+10. Storage/app/public 配下に以下の img ディレクトリを移動させる
 
-```
-.
-├── img
-│   ├── item_img
-│   ├── profile_img
-└── └── temp
-```
-
-<!-- 以下の部分のディレクトリが見つからないので記述を修正する -->
-<!-- 11. 10で作成したimgディレクトリ内に以下のimgディレクトリ内の画像を、item_imgディレクトリ内に以下のitem_imgディレクトリ内の画像を格納する
 ```
 .
 ├── docker
-├── img　←画像が格納されている対象のディレクトリ
-│   ├── item_img ←画像が格納されている対象のディレクトリ
+├── img ←このディレクトリを丸ごとStorage/app/public配下に移動させる
+│   ├── chat_img
+│   ├── item_img
 │   └── ...
 ├── src
 ├── README.md
 └── docker-compose.yml
-``` -->
+```
 
-12. php artisan storage:link
+11. php artisan storage:link
 
-### 単体テスト準備
+## 単体テスト準備
 
-1. テスト用 DB の準備
+1. テスト用 DB を作成する
 
-   1. 管理者権限で DB にログインする
-      - mysql -u root -p
-   2. テスト用 DB の作成
-      - CREATE DATABASE demo_test;
+```
+//テスト用データベースの作成
+docker-compose exec mysql bash
+mysql -u root -p
+//パスワードはrootと入力
+CREATE DATABASE demo_test;
 
-2. config/database.php の以下項目を編集する
+docker-compose exec php bash
+php artisan migrate --env=testing
+```
 
-   - 'database' => 'demo_test',
-   - 'username' => 'root',
-   - 'password' => 'root',
+2. config/database.php を開き、 mysql の配列部分をコピーして新たに mysql_test を作成し、以下の項目を修正する
 
-3. テスト用の.env ファイルを作成する
+   | 項目       | 変更前                      | 変更後      |
+   | ---------- | --------------------------- | ----------- |
+   | 'database' | env('DB_DATABASE', 'forge') | 'demo_test' |
+   | 'username' | env('DB_USERNAME', 'forge') | 'root'      |
+   | 'password' | env('DB_SOCKET', '')        | 'root'      |
 
-   - cp .env .env.testing
+3. PHP コンテナにログインし、.env をコピーして.env.testing ファイルを作成する
+
+```
+
+cp .env .env.testing
+
+```
 
 4. .env.testing ファイルの以下項目を編集する
 
-   - APP_ENV=test
-   - APP_KEY=（値を空にする）
-   - DB_DATABASE=demo_test
-   - DB_USERNAME=root
-   - DB_PASSWORD=root
+   | 項目        | 変更前の値             | 変更後の値         |
+   | ----------- | ---------------------- | ------------------ |
+   | APP_ENV     | local                  | test               |
+   | APP_KEY     | (キーが入っている状態) | （キーを削除する） |
+   | DB_DATABASE | laravel_db             | demo_test          |
+   | DB_USERNAME | laravel_user           | root               |
+   | DB_PASSWORD | laravel_pass           | root               |
 
 5. テスト用アプリケーションキーを作成する
 
-   - php artisan key:generate --env=testing
+```
 
-6. テスト用テーブルを作成する
+php artisan key:generate --env=testing
 
-   - php artisan migrate --env=testing
+```
+
+6. キャッシュを削除する
+
+```
+
+php artisan config:clear
+
+```
 
 7. phpunit.xml の下記のコメントアウトを外す
 
@@ -108,6 +123,14 @@
 <!-- <server name="DB_CONNECTION" value="sqlite"/> -->
 <!-- <server name="DB_DATABASE" value=":memory:"/> -->
 ```
+
+## Stripe について
+
+コンビニ支払いとカード支払いのオプションがありますが、決済画面にてコンビニ支払いを選択しますと、レシートを印刷する画面に遷移します。<br>
+そのため、カード支払いを成功させた場合に意図する画面遷移が行える想定です。
+
+以下のリンクは公式ドキュメントです。<br>
+https://docs.stripe.com/payments/checkout?locale=ja-JP
 
 ## 使用技術（実行環境）
 
