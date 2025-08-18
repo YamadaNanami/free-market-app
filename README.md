@@ -25,11 +25,13 @@
 7. .env.example ファイルから.env ファイルを作成し、環境変数を追加・変更する
 
    追加する環境変数
-   - STRIPE_KEY="StripeのAPIキー　パブリックキー"
-   - STRIPE_SECRET="StripeのAPIキー　シークレットキー"
+
+   - STRIPE_KEY="Stripe の API キー　パブリックキー"
+   - STRIPE_SECRET="Stripe の API キー　シークレットキー"
    - CASHIER_CURRENCY=jpy
-  
+
    変更する環境変数
+
    - DB_HOST=mysql
    - DB_DATABASE=laravel_db
    - DB_USERNAME=laravel_user
@@ -40,7 +42,8 @@
 
 9. php artisan migrate
 
-10. Storage/app/publicに以下のディレクトリ構成を作成する
+10. Storage/app/public に以下のディレクトリ構成を作成する
+
 ```
 .
 ├── img
@@ -48,7 +51,9 @@
 │   ├── profile_img
 └── └── temp
 ```
-11. 10で作成したimgディレクトリ内に以下のimgディレクトリ内の画像を、item_imgディレクトリ内に以下のitem_imgディレクトリ内の画像を格納する
+
+<!-- 以下の部分のディレクトリが見つからないので記述を修正する -->
+<!-- 11. 10で作成したimgディレクトリ内に以下のimgディレクトリ内の画像を、item_imgディレクトリ内に以下のitem_imgディレクトリ内の画像を格納する
 ```
 .
 ├── docker
@@ -58,7 +63,8 @@
 ├── src
 ├── README.md
 └── docker-compose.yml
-```
+``` -->
+
 12. php artisan storage:link
 
 ### 単体テスト準備
@@ -97,6 +103,7 @@
    - php artisan migrate --env=testing
 
 7. phpunit.xml の下記のコメントアウトを外す
+
 ```
 <!-- <server name="DB_CONNECTION" value="sqlite"/> -->
 <!-- <server name="DB_DATABASE" value=":memory:"/> -->

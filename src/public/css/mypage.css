@@ -20,6 +20,11 @@
     height: 150px;
     border-radius: 50%;
 }
+.flex-area{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
 
 .input-name{
     font-size: 36px;
@@ -27,6 +32,20 @@
     border:none;
     outline: none;
     margin-left: 80px;
+    margin-bottom: 15px;
+}
+
+.evaluations-area{
+    margin-left: 50px;
+}
+
+.star{
+    width:40px;
+    height: 40px;
+}
+
+.star.active{
+    filter: invert(10%) sepia(100%) saturate(325%) hue-rotate(351deg) brightness(103%) contrast(105%);
 }
 
 .update-btn {
@@ -62,21 +81,32 @@
 }
 
 .tab-txt {
+    margin-right: 60px;
     border: none;
     background: none;
     padding: 0;
     font-size: 20px;
     font-weight: 700;
     color: #5F5F5F;
+    line-height: 26px;
     cursor: pointer;
 }
 
-.tab-txt:first-of-type {
-    margin-right: 60px;
+.tab-txt:last-of-type {
+    margin-right: unset;
 }
 
 input[type=radio]:checked + .tab-txt{
     color:#FF0000;
+}
+
+.notice{
+    display: inline-block;
+    width: 27px;
+    height: 26px;
+    border-radius: 10px;
+    background-color: #FF0000;
+    color: #fff;
 }
 
 .item-list {
@@ -91,13 +121,29 @@ input[type=radio]:checked + .tab-txt{
 }
 
 .item-img-wrap {
+    position: relative;
     width: 100%;
     aspect-ratio: 1/1;
     margin-bottom: 10px;
 }
 
 .item-img {
+    border-radius: 4px;
     object-fit: contain;
+}
+
+.item-notice {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    padding-top: 3px;
+    border-radius: 50%;
+    background-color: #FF0000;
+    font-size: 10px;
+    color: #fff;
 }
 
 .item-name {

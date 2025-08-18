@@ -19,7 +19,7 @@ class ItemsTableSeeder extends Seeder
         $userIds = User::pluck('id');
 
         $param = [
-            'user_id' => $userIds[mt_rand(0,count($userIds)-1)],
+            'user_id' => 1,
             'img_url' => 'item_img/Armani+Mens+Clock.jpg',
             'item_name' => '腕時計',
             'brand_name' => Str::random(10),
@@ -30,7 +30,7 @@ class ItemsTableSeeder extends Seeder
         DB::table('items')->insert($param);
 
         $param = [
-            'user_id' => $userIds[mt_rand(0,count($userIds)-1)],
+            'user_id' => 1,
             'img_url' => 'item_img/HDD+Hard+Disk.jpg',
             'item_name' => 'HDD',
             'brand_name' => Str::random(10),
@@ -41,7 +41,7 @@ class ItemsTableSeeder extends Seeder
         DB::table('items')->insert($param);
 
         $param = [
-            'user_id' => $userIds[mt_rand(0,count($userIds)-1)],
+            'user_id' => 1,
             'img_url' => 'item_img/iLoveIMG+d.jpg',
             'item_name' => '玉ねぎ3束',
             'brand_name' => Str::random(10),
@@ -52,7 +52,7 @@ class ItemsTableSeeder extends Seeder
         DB::table('items')->insert($param);
 
         $param = [
-            'user_id' => $userIds[mt_rand(0,count($userIds)-1)],
+            'user_id' => 1,
             'img_url' => 'item_img/Leather+Shoes+Product+Photo.jpg',
             'item_name' => '革靴',
             'brand_name' => Str::random(10),
@@ -63,7 +63,7 @@ class ItemsTableSeeder extends Seeder
         DB::table('items')->insert($param);
 
         $param = [
-            'user_id' => $userIds[mt_rand(0,count($userIds)-1)],
+            'user_id' => 1,
             'img_url' => 'item_img/Living+Room+Laptop.jpg',
             'item_name' => 'ノートPC',
             'brand_name' => Str::random(10),
@@ -74,7 +74,7 @@ class ItemsTableSeeder extends Seeder
         DB::table('items')->insert($param);
 
         $param = [
-            'user_id' => $userIds[mt_rand(0,count($userIds)-1)],
+            'user_id' => 2,
             'img_url' => 'item_img/Music+Mic+4632231.jpg',
             'item_name' => 'マイク',
             'brand_name' => Str::random(10),
@@ -85,7 +85,7 @@ class ItemsTableSeeder extends Seeder
         DB::table('items')->insert($param);
 
         $param = [
-            'user_id' => $userIds[mt_rand(0,count($userIds)-1)],
+            'user_id' => 2,
             'img_url' => 'item_img/Purse+fashion+pocket.jpg',
             'item_name' => 'ショルダーバッグ',
             'brand_name' => Str::random(10),
@@ -96,7 +96,7 @@ class ItemsTableSeeder extends Seeder
         DB::table('items')->insert($param);
 
         $param = [
-            'user_id' => $userIds[mt_rand(0,count($userIds)-1)],
+            'user_id' => 2,
             'img_url' => 'item_img/Tumbler+souvenir.jpg',
             'item_name' => 'タンブラー',
             'brand_name' => Str::random(10),
@@ -107,7 +107,7 @@ class ItemsTableSeeder extends Seeder
         DB::table('items')->insert($param);
 
         $param = [
-            'user_id' => $userIds[mt_rand(0,count($userIds)-1)],
+            'user_id' => 2,
             'img_url' => 'item_img/Waitress+with+Coffee+Grinder.jpg',
             'item_name' => 'コーヒーミル',
             'brand_name' => Str::random(10),
@@ -118,7 +118,7 @@ class ItemsTableSeeder extends Seeder
         DB::table('items')->insert($param);
 
         $param = [
-            'user_id' => $userIds[mt_rand(0,count($userIds)-1)],
+            'user_id' => 2,
             'img_url' => 'item_img/MakeUp.jpg',
             'item_name' => 'メイクセット',
             'brand_name' => Str::random(10),

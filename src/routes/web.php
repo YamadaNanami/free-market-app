@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\EvaluationController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\MypageController;
 use App\Http\Controllers\ProfileController;
@@ -110,4 +112,23 @@ Route::middleware('auth')->group(function () {
         Route::get('/checkout/success', [StripeController::class, 'success'])->name('stripe.success');
 
     });
+
+    Route::group(['prefix' => 'chat'], function () {
+        //取引チャット画面の表示
+        Route::get('/{trade_id}',[ChatController::class,'index'])->name('chat.index');
+
+        //送信したチャットの編集処理
+        Route::patch('edit/{chat_id}', [ChatController::class, 'editMessage'])->name('chat.edit');
+
+        //送信したチャットの削除処理
+        Route::delete('delete/{chat_id}', [ChatController::class, 'deleteMessage'])->name('chat.delete');
+
+        //チャットの送信処理
+        Route::post('send/{trade_id}', [ChatController::class, 'sendMessage'])->name('chat.send');
+    });
+
+    Route::group(['prefix' => 'evaluation'], function () {
+        Route::post('/{trade_id}', [EvaluationController::class,'sendEvaluation'])->name('evaluation.send');
+    });
+
 });
