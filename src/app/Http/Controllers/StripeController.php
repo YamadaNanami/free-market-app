@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PurchaseRequest;
 use App\Models\Item;
+use App\Models\Trade;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class StripeController extends Controller
 {
@@ -35,11 +37,25 @@ class StripeController extends Controller
         $itemId = $request->item_id;
         $address = $request->address;
 
-        $user->items()->attach([$itemId => [
-            'post' => $address['post'],
-            'address' => $address['address'],
-            'building' => $address['building'],
-        ] ]);
+        DB::transaction(function () use ($itemId,$user,$address) {
+            $user->items()->attach([$itemId => [
+                'post' => $address['post'],
+                'address' => $address['address'],
+                'building' => $address['building'],
+            ] ]);
+
+            // 対象商品から出品者のuser_idを取得する
+            $sellerUserId = Item::where('id',$itemId)->value('user_id');
+
+            // 購入後に取引チャットができるようにtradesテーブルに登録する
+            Trade::create([
+                'seller_user_id' => $sellerUserId,
+                'purchaser_user_id' => $user->id,
+                'item_id' => $itemId
+            ]);
+
+        });
+
 
         return redirect()->route('mypage.index', ['page' => 'buy']);
 
