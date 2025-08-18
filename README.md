@@ -66,7 +66,7 @@
 
 11. php artisan storage:link
 
-## 単体テスト準備
+## テスト準備
 
 1. テスト用 DB を作成する
 
@@ -87,7 +87,7 @@ php artisan migrate --env=testing
    | ---------- | --------------------------- | ----------- |
    | 'database' | env('DB_DATABASE', 'forge') | 'demo_test' |
    | 'username' | env('DB_USERNAME', 'forge') | 'root'      |
-   | 'password' | env('DB_SOCKET', '')        | 'root'      |
+   | 'password' | env('DB_PASSWORD', '')      | 'root'      |
 
 3. PHP コンテナにログインし、.env をコピーして.env.testing ファイルを作成する
 
@@ -128,6 +128,13 @@ php artisan config:clear
 ```
 <!-- <server name="DB_CONNECTION" value="sqlite"/> -->
 <!-- <server name="DB_DATABASE" value=":memory:"/> -->
+```
+
+## テストの実行
+
+```
+docker compose exec php bash
+vendor/bin/phpunit tests/Feature/テストファイル名
 ```
 
 ## Stripe について
