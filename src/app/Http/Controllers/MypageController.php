@@ -112,17 +112,22 @@ class MypageController extends Controller
                 }
             ])
             ->addSelect([
+                // 未読チャットの最新日時
                 'latest_unread_at' => Chat::select(DB::raw('MAX(created_at)'))
                     ->whereColumn('trade_id', 'trades.id')
                     ->where('user_id', '!=', $userId)
-                    ->where('unread_flag', 0)
+                    ->where('unread_flag', 0),
+
+                // すべてのチャットの最新日時
+                'latest_chat_at' => Chat::select(DB::raw('MAX(created_at)'))
+                    ->whereColumn('trade_id','trades.id')
             ])
             ->where(function ($query) use ($userId) {
                 $query->where('seller_user_id', $userId)
                     ->orWhere('purchaser_user_id', $userId);
             })
-            ->orderByRaw('latest_unread_at IS NULL')
-            ->orderByDesc('latest_unread_at')
+            ->orderByRaw('latest_unread_at IS NULL') // 未読ありを新着メッセージ順にする
+            ->orderByDesc(DB::raw('COALESCE(latest_unread_at, latest_chat_at)')) // 未読がなければ最新チャット順
             ->get();
 
         $items = $trades->map(function ($trade) {
