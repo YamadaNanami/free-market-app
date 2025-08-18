@@ -48,7 +48,7 @@
     <ul class="item-list">
         @foreach($items as $item)
         <li class="item">
-            <!-- 取引中の商品を表示する場合のみ、チャット画面が表示できるようにする -->
+            <!-- 取引中の商品を表示する場合のみ、チャット画面を表示できるようにする -->
             <a href="{{ empty($tab) || $tab != 'trade' ? route('item.detail',['item_id' => $item['id']]) : route('chat.index',['trade_id' => $item['tradeId']]) }}">
                 <div class="item-img-wrap">
                     <img src="{{ asset('storage/img/'.$item['img_url']) }}" alt="商品画像" class="item-img">

@@ -75,7 +75,6 @@
                             @method('PATCH')
                             @csrf
                             <textarea name="message" class="message" rows="1">{{ $chat['message'] }}</textarea>
-                            <!-- 以下の画像を表示する箇所は不要だったら削除する -->
                             @if(!is_null($chat['img_url']))
                                 <img src="{{ asset('storage/img/'.$chat['img_url']) }}" alt="送信された画像">
                             @endif
@@ -95,7 +94,6 @@
                             <p class="user-name">{{ $otherUser['name'] }}</p>
                         </div>
                         <div class="message">{{ $chat['message'] }}</div>
-                        <!-- 以下の画像を表示する箇所は不要だったら削除する -->
                         @if(!is_null($chat['img_url']))
                             <img src="{{ asset('storage/img/'.$chat['img_url']) }}" alt="送信された画像">
                         @endif
