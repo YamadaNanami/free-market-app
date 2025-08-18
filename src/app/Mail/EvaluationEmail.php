@@ -30,7 +30,6 @@ class EvaluationEmail extends Mailable
     public function build()
     {
         return $this->to($this->recipient['email']) // 宛先
-            ->from(auth()->user()->email) // 送信元
             ->subject('取引完了メール')// 件名
             ->view('mail.evaluation_email') // 本文（HTMLメール）
             ->text('mail.evaluation_email_text'); // 本文（プレーンテキストメール）

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Chat;
 use App\Models\Evaluation;
 use App\Models\Trade;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Item;
 
@@ -46,20 +48,7 @@ class MypageController extends Controller
 
             //取引中の商品リンク押下時
             case 'trade':
-                $items = [];
-
-                foreach($trades->get() as $trade){
-                    $items[] = Item::find($trade->item_id);
-                }
-
-                foreach($items as $item){
-                    foreach($totalUnread as $unread){
-                        if($item->id == $unread->item_id){
-                            $item['tradeId'] = $unread->id;
-                            $item['notice'] = $unread->chats_count;
-                        }
-                    }
-                }
+                $items = $this->getTradeItems($userId);
 
                 break;
 
@@ -95,15 +84,54 @@ class MypageController extends Controller
     }
 
     private function getAvgEvaluation($userId){
-        // ログインユーザーへの評価を全取得する
-        $evaluations = Evaluation::where('user_id', $userId)->get('evaluation');
+        $evaluationSql = Evaluation::where('user_id', $userId);
 
-        // 評価の値を配列に入れる
-        $counts = [];
-        foreach($evaluations as $evaluation){
-            $counts[] = $evaluation->evaluation;
+        if($evaluationSql->exists()){
+            // ログインユーザーへの評価がある場合
+            $evaluations = Evaluation::where('user_id', $userId)->get('evaluation');
+
+            // 評価の値を配列に入れる
+            $counts = [];
+            foreach($evaluations as $evaluation){
+                $counts[] = $evaluation->evaluation;
+            }
+
+            return round(collect($counts)->avg());
+        }else{
+            // ログインユーザーへの評価がない場合は、nullを返す
+            return null;
         }
+    }
 
-        return round(collect($counts)->avg());
+    public function getTradeItems($userId){
+        $trades = Trade::with('item')
+            ->withCount([
+                'chats as unread_count' => function ($query) use ($userId) {
+                    $query->where('user_id', '!=', $userId)
+                        ->where('unread_flag', 0);
+                }
+            ])
+            ->addSelect([
+                'latest_unread_at' => Chat::select(DB::raw('MAX(created_at)'))
+                    ->whereColumn('trade_id', 'trades.id')
+                    ->where('user_id', '!=', $userId)
+                    ->where('unread_flag', 0)
+            ])
+            ->where(function ($query) use ($userId) {
+                $query->where('seller_user_id', $userId)
+                    ->orWhere('purchaser_user_id', $userId);
+            })
+            ->orderByRaw('latest_unread_at IS NULL')
+            ->orderByDesc('latest_unread_at')
+            ->get();
+
+        $items = $trades->map(function ($trade) {
+            $item = $trade->item;
+            $item['tradeId'] = $trade->id;
+            $item['notice'] = $trade->unread_count;
+            return $item;
+        });
+
+        return $items;
     }
 }

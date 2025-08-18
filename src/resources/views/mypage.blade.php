@@ -14,7 +14,7 @@
             <input type="text" name="name" class="input-name" readonly value="{{ $user['name'] }}">
             <div class="evaluations-area">
                 <!-- 評価がある場合は、取引評価の平均を表示する -->
-                @if($getAvgEvaluation != 0)
+                @if(!is_null($getAvgEvaluation))
                     @for($i = 1; $i <= $getAvgEvaluation; $i++)
                         <img src="{{ asset('storage/img/star.svg') }}" alt="ユーザー評価" class="star active">
                     @endfor

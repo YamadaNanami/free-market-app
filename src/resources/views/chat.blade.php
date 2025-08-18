@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-{{-- @section('title')
+@section('title')
     @if($isPurchaser)
         '取引チャット画面（購入者）'
     @else
         '取引チャット画面（出品者）'
     @endif
-@endsection --}}
+@endsection
 
 @section('css')
 <link rel="stylesheet" href="{{ asset('css/chat.css') }}">
@@ -28,8 +28,8 @@
         <div class="chat-header">
             <img src="@empty($otherUser['profile']['img_url']) {{ asset('storage/img/noImage.png') }} @else {{ asset('storage/img/'.$otherUser['profile']['img_url']) }} @endempty" alt="プロフィール画像" class="customer-img">
             <h2 class="page-title">「{{ $otherUser['name'] }}」さんとの取引画面</h2>
+            <!-- ログインユーザーが購入者の場合か、ログインユーザーが出品者の場合は購入者が既に取引評価済みの場合に取引評価リンクを表示する -->
             @if($showEvaluationLink)
-                <!-- 一旦購入者のみ表示。出品者へは購入者が評価完了後にリンクを表示させる -->
                 <a href="#{{ $tradeId }}" class="modal-link">取引を完了する</a>
             @endif
             <!-- モーダル -->
@@ -38,6 +38,7 @@
                     <p class="modal-title">取引が完了しました。</p>
                     <form action="{{ route('evaluation.send',['trade_id' => $tradeId]) }}" method="post" class="evaluation-form">
                         @csrf
+                        <input type="hidden" name="isPurchaser" value="{{ $isPurchaser }}">
                         <p class="text">今回の取引相手はどうでしたか？</p>
                         <div class="stars">
                             @for($i = 5; $i >= 1; $i--)

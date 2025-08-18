@@ -6,7 +6,6 @@ use App\Mail\EvaluationEmail;
 use App\Models\Evaluation;
 use App\Models\Trade;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 class EvaluationController extends Controller
@@ -15,12 +14,12 @@ class EvaluationController extends Controller
         $evaluation = $request->evaluations ?? 0;
         $tradeSql = Trade::find($tradeId);
 
-        $tradeRole =  $tradeSql->value('purchaser_user_id') == Auth::id() ? 'purchaser' : 'seller';
+        $isPurchaser = $request->isPurchaser;
 
-        if($tradeRole == 'purchaser'){
+        if($isPurchaser){
             //評価をするのが購入者の場合
             $evaluationTargetUserId = $tradeSql->seller()->value('id');
-        }elseif($tradeRole == 'seller'){
+        }elseif(!$isPurchaser){
             //評価をするのが出品者の場合
             $evaluationTargetUserId = $tradeSql->purchaser()->value('id');
         }
@@ -31,7 +30,7 @@ class EvaluationController extends Controller
             'evaluation' => $evaluation
         ]);
 
-        if($tradeRole == 'purchaser'){
+        if($isPurchaser){
             // 出品者へ取引完了メールを送信する
             Mail::send(new EvaluationEmail($tradeSql));
         }

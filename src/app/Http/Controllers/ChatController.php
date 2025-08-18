@@ -19,9 +19,11 @@ class ChatController extends Controller
         $trade = Trade::find($tradeId);
         $userId = Auth::id();
 
-        //取引評価を表示するか判定するためのフラグ
-        // ログインユーザーが購入者、または購入者が評価済みの出品者はtrue
-        $showEvaluationLink = $trade['purchaser_user_id'] == $userId
+        // ログインユーザーが購入者かを判定するためのフラグ
+        $isPurchaser = $trade['purchaser_user_id'] == $userId ? true : false;
+
+        //取引評価リンクを表示するか判定するためのフラグ
+        $showEvaluationLink = $isPurchaser
             ? true
             : Evaluation::where('trade_id',$tradeId)
                 ->where('user_id',$userId)
@@ -61,7 +63,7 @@ class ChatController extends Controller
             $updateChats->update(['unread_flag'=> 1]);
         });
 
-        return view('chat', compact('tradeId','showEvaluationLink','otherTrades' ,'item', 'loginUser','otherUser','chats'));
+        return view('chat', compact('tradeId','isPurchaser','showEvaluationLink','otherTrades' ,'item', 'loginUser','otherUser','chats'));
     }
 
     public function editMessage(Request $request,$chatId){
@@ -78,16 +80,7 @@ class ChatController extends Controller
         $targetChat = Chat::find($chatId);
         $tradeId = $targetChat->trade_id;
 
-        $isSameTradeChat = Chat::where('trade_id', $tradeId)
-                ->whereNotIn('id', array($chatId))
-                ->exists();
-
-        DB::transaction(function () use ($targetChat,$isSameTradeChat,$tradeId) {
-            //取引チャットが削除対象のメッセージのみの場合、対象の取引チャットを削除する（データの整合性を保つため）
-            if(!$isSameTradeChat){
-                Trade::find($tradeId)->delete();
-            }
-
+        DB::transaction(function () use ($targetChat) {
             //対象メッセージの削除
             $targetChat->delete();
 
@@ -96,11 +89,6 @@ class ChatController extends Controller
                 Storage::disk('public')->delete('img/'.$targetChat->img_url);
             }
         });
-
-        if(!$isSameTradeChat){
-            // 取引チャットを削除した場合は、マイページに遷移する
-            return redirect()->route('mypage.index');
-        }
 
         return redirect()->route('chat.index', ['trade_id' => $tradeId]);
     }
@@ -115,7 +103,7 @@ class ChatController extends Controller
             }));
 
             if(empty($savedTexts)){
-                // セッションに保存されているチャットが１件だった場合
+                // セッションに保存されている本文がリクエストで送信されたもののみだった場合
                 session()->forget('savedTexts');
             }else{
                 // 複数件ある場合
