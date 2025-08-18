@@ -76,7 +76,9 @@
                             @csrf
                             <textarea name="message" class="message" rows="1">{{ $chat['message'] }}</textarea>
                             @if(!is_null($chat['img_url']))
-                                <img src="{{ asset('storage/img/'.$chat['img_url']) }}" alt="送信された画像">
+                                <a href="{{ asset('storage/img/'.$chat['img_url']) }}" target="_blank">
+                                    {{ str_replace('chat_img/','',$chat['img_url']) }}
+                                </a>
                             @endif
                             <button type="submit" class="submit-btn edit-btn">編集</button>
                         </form>
@@ -95,7 +97,9 @@
                         </div>
                         <div class="message">{{ $chat['message'] }}</div>
                         @if(!is_null($chat['img_url']))
-                            <img src="{{ asset('storage/img/'.$chat['img_url']) }}" alt="送信された画像">
+                                <a href="{{ asset('storage/img/'.$chat['img_url']) }}" target="_blank">
+                                    {{ str_replace('chat_img/','',$chat['img_url']) }}
+                                </a>
                         @endif
                     </div>
                 @endif
