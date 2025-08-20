@@ -38,5 +38,7 @@ class CreateUsersTable extends Migration
             $table->string('pm_last_four', 4)->nullable();
             $table->timestamp('trial_ends_at')->nullable();
         });
+
+        Schema::dropIfExists('users');
     }
 }
