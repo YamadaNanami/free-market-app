@@ -44,21 +44,9 @@
 
 9. php artisan migrate
 
-10. Storage/app/public 配下に以下の img ディレクトリを移動させる
+10. Storage/app/public/img ディレクトリに以下ディレクトリを追加する
 
 ```
-.
-├── docker
-├── img ←このディレクトリを丸ごとStorage/app/public配下に移動させる
-│   ├── item_img
-│   └── ...
-├── src
-├── README.md
-└── docker-compose.yml
-```
-
-```
-移動させたimgディレクトリ配下に以下ディレクトリを追加する
 ・chat_img
 ・profile_img
 ・temp
