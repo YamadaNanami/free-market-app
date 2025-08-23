@@ -29,8 +29,10 @@
             <img src="@empty($otherUser['profile']['img_url']) {{ asset('storage/img/noImage.png') }} @else {{ asset('storage/img/'.$otherUser['profile']['img_url']) }} @endempty" alt="プロフィール画像" class="customer-img">
             <h2 class="page-title">「{{ $otherUser['name'] }}」さんとの取引画面</h2>
             <!-- ログインユーザーが購入者の場合か、ログインユーザーが出品者の場合は購入者が既に取引評価済みの場合に取引評価リンクを表示する -->
-            @if($showEvaluationLink)
-                <a href="#{{ $tradeId }}" class="modal-link">取引を完了する</a>
+            @if($showEvaluationLink['display'])
+                <a href="#{{ $tradeId }}" class="modal-link {{ $showEvaluationLink['status'] == 'finished' ? 'link-disabled' : '' }}">
+                {{ $showEvaluationLink['status'] == 'finished' ? '取引評価済み' : '取引を完了する' }}
+                </a>
             @endif
             <!-- モーダル -->
             <div class="modal" id="{{ $tradeId }}">

@@ -23,11 +23,7 @@ class ChatController extends Controller
         $isPurchaser = $trade['purchaser_user_id'] == $userId ? true : false;
 
         //取引評価リンクを表示するか判定するためのフラグ
-        $showEvaluationLink = $isPurchaser
-            ? true
-            : Evaluation::where('trade_id',$tradeId)
-                ->where('user_id',$userId)
-                ->exists();
+        $showEvaluationLink = $this->evaluateLinkState($isPurchaser,$tradeId);
 
         //チャット相手のuser_idを取得する
         $otherUserId = $trade['seller_user_id'] != $userId
@@ -64,6 +60,36 @@ class ChatController extends Controller
         });
 
         return view('chat', compact('tradeId','isPurchaser','showEvaluationLink','otherTrades' ,'item', 'loginUser','otherUser','chats'));
+    }
+
+    private function evaluateLinkState($isPurchaser,$tradeId){
+        $evaluationSql = Evaluation::where('trade_id', $tradeId);
+
+        if($isPurchaser){
+            //ログインユーザーが購入者の場合
+            if($evaluationSql->first()){
+                // 評価済みの場合
+                return ['display' => true, 'status' => 'finished'];
+            }else{
+                // 未評価の場合
+                return ['display' => true, 'status' => 'unfinished'];
+            }
+        }else{
+            //ログインユーザーが出品者の場合
+            $countTradeEvaluations = count($evaluationSql->get());
+
+            if($countTradeEvaluations == 1){
+                // 購入者のみ評価済みの場合
+                return ['display' => true, 'status' => 'unfinished'];
+            }elseif($countTradeEvaluations == 2){
+                // 購入者・出品者共に評価済みの場合
+                return ['display' => true, 'status' => 'finished'];
+            }
+
+            // 購入者が未評価の場合
+            return ['display' => false];
+        }
+
     }
 
     public function editMessage(Request $request,$chatId){

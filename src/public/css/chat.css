@@ -83,6 +83,11 @@
     color: #fff;
 }
 
+.modal-link.link-disabled{
+    pointer-events: none;
+    background-color: #868686;
+}
+
 .trade-item-info{
     display: flex;
     align-items: center;
@@ -259,6 +264,7 @@
     width: 598px;
     height: 367px;
     visibility: hidden;
+    z-index: 1;
 }
 
 .modal:target {
