@@ -27,7 +27,7 @@ class TopController extends Controller
             if($currentTab == 'mylist'){
                 // いいねした商品を取得
                 $user = User::find($user_id);
-                $likeItems = $user->like;
+                $likeItems = $user->like->where('user_id','!=',$user_id);
 
                 // itemsの配列を作成
                 $items = [];
@@ -44,19 +44,16 @@ class TopController extends Controller
                 // 出品した商品以外を取得
                 $items = $query->whereNotIn('user_id', [$user_id])->get();
             }
-
         }else{
             // 未ログインの場合
             $items = $query->get();
         }
 
-        // 売り切れの商品を取得
+        // 売り切れの商品を取得し、フラグを設定する
         $purchaseLists = Purchase::get();
-
         foreach($items as $item){
             foreach($purchaseLists as $purchase){
                 if($item['id'] == $purchase->item_id){
-                    // 売り切れの商品にフラグを設定
                     $item['soldOutItemExists'] = true;
                 }
             }
