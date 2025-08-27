@@ -106,19 +106,22 @@ class MypageController extends Controller
     public function getTradeItems($userId){
         $trades = Trade::with('item')
             ->withCount([
+                // 未読チャット数をカウントする(デフォルトだとchats_countになるところをunread_countに変更)
                 'chats as unread_count' => function ($query) use ($userId) {
                     $query->where('user_id', '!=', $userId)
                         ->where('unread_flag', 0);
                 }
             ])
             ->addSelect([
-                // 未読チャットの最新日時
+                // 各取引チャットの未読チャットが送信された日時を取得する（未読チャットがない場合はNULL）
+                // SELECT MAX(created_at) FROM chats WHERE 'trade_id' = 'trades.id' AND 'user_id' != $userId AND 'unread_flag' = 0;
                 'latest_unread_at' => Chat::select(DB::raw('MAX(created_at)'))
                     ->whereColumn('trade_id', 'trades.id')
                     ->where('user_id', '!=', $userId)
                     ->where('unread_flag', 0),
 
                 // すべてのチャットの最新日時
+                // SELECT MAX(created_at) FROM chats WHERE 'trade_id' = 'trades.id';
                 'latest_chat_at' => Chat::select(DB::raw('MAX(created_at)'))
                     ->whereColumn('trade_id','trades.id')
             ])
@@ -126,8 +129,12 @@ class MypageController extends Controller
                 $query->where('seller_user_id', $userId)
                     ->orWhere('purchaser_user_id', $userId);
             })
-            ->orderByRaw('latest_unread_at IS NULL') // 未読ありを新着メッセージ順にする
-            ->orderByDesc(DB::raw('COALESCE(latest_unread_at, latest_chat_at)')) // 未読がなければ最新チャット順
+            // latest_unread_at IS NULLの結果で昇順にソートする
+            // 未読あり：latest_unread_at IS NULL = 0 → 上に来る
+            // 未読なし：latest_unread_at IS NULL = 1→ 下に回る
+            ->orderByRaw('latest_unread_at IS NULL')
+            // 未読チャットありの取引チャットの場合はlatest_unread_at、未読チャットなしの取引チャットの場合はlatest_chat_atの降順でソートする
+            ->orderByDesc(DB::raw('COALESCE(latest_unread_at, latest_chat_at)'))
             ->get();
 
         $items = $trades->map(function ($trade) {
