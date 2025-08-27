@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Purchase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
 use App\Models\Item;
 use App\Models\User;
@@ -43,20 +45,21 @@ class TopController extends Controller
                 $items = $query->whereNotIn('user_id', [$user_id])->get();
             }
 
-            // ユーザーが購入した商品を取得
-            $purchaseLists = User::find($user_id)->items;
-
-            foreach($items as $item){
-                foreach($purchaseLists as $purchase){
-                    if($item['id'] == $purchase->pivot->item_id){
-                        // ユーザーが購入済の商品にフラグを設定
-                        $item['soldOutItemExists'] = true;
-                    }
-                }
-            }
         }else{
             // 未ログインの場合
             $items = $query->get();
+        }
+
+        // 売り切れの商品を取得
+        $purchaseLists = Purchase::get();
+
+        foreach($items as $item){
+            foreach($purchaseLists as $purchase){
+                if($item['id'] == $purchase->item_id){
+                    // 売り切れの商品にフラグを設定
+                    $item['soldOutItemExists'] = true;
+                }
+            }
         }
 
         return view('top', compact('items','currentTab'));
