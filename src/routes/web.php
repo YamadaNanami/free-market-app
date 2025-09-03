@@ -48,7 +48,8 @@ Route::post('/email/verification-notification', function (Request $request) {
 Route::get('/', [TopController::class, 'index'])->name('top.index');
 
 // 商品検索
-Route::get('/search', [TopController::class, 'storeTempKeyword']);
+Route::get('/search', [TopController::class, 'storeTempKeyword'])
+->name('search');
 
 // 商品詳細画面の表示
 Route::get('/item/:{item_id}', [ItemController::class, 'index'])->name('item.detail');

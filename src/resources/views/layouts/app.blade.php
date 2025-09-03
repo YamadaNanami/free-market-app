@@ -23,7 +23,7 @@
                 </a>
             </h1>
             @if(!request()->routeIs('chat.index'))
-                <form action="/search" method="get" class="search-form">
+                <form action="{{ route('search') }}" method="get" class="search-form">
                     <input type="search" name="keyword" class="search-form-input" placeholder="なにをお探しですか？" value="{{ old('keyword',session()->get('keyword')) }}">
                 </form>
                 <nav class="header-nav">
