@@ -43,39 +43,26 @@ class MypageControllerTest extends TestCase
     }
 
     /* No.13 */
-    public function test_view_profile(){
+    public function test_display_profile(){
         // コントローラーの処理
         $response = $this->actingAs($this->user)
             ->get(route('mypage.index'));
-        $response->assertViewIs('mypage');
 
-        $userInfo = $response['user'];
-        $userImg = $userInfo['profile']['img_url'];
-        $userName = $userInfo['name'];
+        $contents = $response->content();
 
         // プロフィール画像
-        $this->assertEquals($userImg, $this->user->profile->img_url);
+        $this->assertStringContainsString('storage/img/noImage.png',$contents);
 
         // ユーザー名
-        $this->assertEquals($userName, $this->user->name);
+        $this->assertStringContainsString($this->user->name,$contents);
     }
 
-    public function test_sell_items(){
+    public function test_display_sell_items(){
         // コントローラーの処理
         $response = $this->actingAs($this->user)
         ->get(route('mypage.index',['tab' => 'sell']));
-        $response->assertStatus(200);
 
-        $sellItems = [];
-        foreach($response['items'] as $item){
-            $sellItems = [
-                'id' => $item['id'],
-                'user_id' => $item['user_id'],
-                'price' => $item['price'],
-                'condition' =>  $item['condition']
-            ];
-        }
-
+        // 出品者がログインユーザーの商品を配列に格納
         $dbSellItems = [];
         foreach($this->items->toArray() as $item){
             if($this->user->id == $item['user_id']){
@@ -83,32 +70,32 @@ class MypageControllerTest extends TestCase
             }
         }
 
-        $this->assertEquals(
-            sort($sellItems),
-            sort($dbSellItems)
-        );
+        // 画面に出品した商品が表示されていることを確認する
+        $contents = $response->content();
+
+        foreach($dbSellItems as $item){
+            $this->assertStringContainsString($item['item_name'], $contents);
+        }
     }
 
-    public function test_buy_items(){
+    public function test_display_buy_items(){
         // 購入済み商品のデータ作成
-        $buyItem = Purchase::make([
+        Purchase::create([
             'user_id' => $this->user->id,
-            'item_id' => $this->items->first()->id
+            'item_id' => $this->items->last()->id,
+            'post' => $this->user->profile->post,
+            'address' => $this->user->profile->address,
+            'building' => $this->user->profile->building
         ]);
 
         // コントローラーの処理
         $response = $this->actingAs($this->user)
         ->get(route('mypage.index',['tab' => 'buy']));
-        $response->assertViewIs('mypage');
 
-        $dbBuyItems = [];
-        foreach($this->items as $item){
-            if($item['user_id'] == $this->user->id){
-                array_push($dbBuyItems, $item);
-            }
-        }
+        // 画面に購入した商品が表示されていることを確認する
+        $contents = $response->content();
 
-        $this->assertEquals($buyItem['item_name'], $dbBuyItems['item_name']);
+        $this->assertStringContainsString($this->items->last()->item_name, $contents);
 
     }
 }

@@ -33,6 +33,7 @@ class ProfileControllerTest extends TestCase
         $this->user = User::with('profile')->first();
     }
 
+    /* No.14 */
     public function test_view_profile(){
         // コントローラー側の処理
         $response = $this->actingAs($this->user)

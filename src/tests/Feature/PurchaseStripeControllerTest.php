@@ -51,6 +51,10 @@ class PurchaseStripeControllerTest extends TestCase
 
     /* No.10 */
     public function test_can_charge(){
+        // アイテムの出品者がログインユーザーにならないようデータを修正する（商品一覧画面に表示されなくなるため）
+        Item::find($this->item->id)->update([
+            'user_id' => 2
+        ]);
         // ダミーの送付先住所
         $address = [
             'post' => "000-1111",
@@ -58,53 +62,32 @@ class PurchaseStripeControllerTest extends TestCase
             'building' => "〇〇マンション"
         ];
 
-        $response = $this->actingAs($this->user)
-            ->get(route('purchase.index', [
+        $this->actingAs($this->user)
+            ->get(route('stripe.success', [
                 'item_id' => $this->item->id,
-                'payment' => 'card',
                 'address' => $address
             ]));
-        $response->assertStatus(200);
 
-        $paymentIntent = $this->stripe->paymentIntents->create([
-            'amount' => 500,
-            'currency' => 'jpy',
-            'payment_method' => 'pm_card_visa',
-            'payment_method_types' => ['card'],
-            'confirm' => true,
+        //購入完了 = Purchasesテーブルに対象のデータが存在する
+        $this->assertDatabaseHas('purchases', [
+            'user_id' => $this->user->id,
+            'item_id' => $this->item->id,
         ]);
-
-        // 決済が成功していることを確認
-        $this->assertEquals('succeeded', $paymentIntent->status);
-        $this->assertEquals(500, $paymentIntent->amount);
-        $this->assertEquals('jpy', $paymentIntent->currency);
-        $this->assertContains('card', $paymentIntent->payment_method_types);
-
-        // Purchasesテーブルに登録されていることを確認
-        // $response->assertDatabaseHas('purchases', [
-        //     'item_id' => $this->item->id,
-        //     'user_id' => $this->user->id,
-        // ]);
 
         // 購入した商品が商品一覧画面にて「sold」と表示されることを確認
         $response = $this->actingAs($this->user)->get('/');
-        $response->assertViewIs('top');
 
-        foreach($response['items'] as $item){
-            if ($item['id'] == $this->item->id)
-                $soldItem = $item;
-        }
-
-        $response->assertEquals($soldItem['soldOutItemExists'], true);
+        $contents = $response->content();
+        $this->assertStringContainsString($this->item->item_name . '　Sold', $contents);
 
         // 「プロフィール/購入した商品一覧」に追加されていることを確認
         $response = $this->actingAs($this->user)
             ->get(route('mypage.index',[
                 'tab' => 'buy'
             ]));
-        $response->assertViewIs('mypage');
-        $response->assertContains($response['items'],$this->item->item_name);
 
+        $contents = $response->content();
+        $this->assertStringContainsString($this->item->item_name, $contents);
     }
 
     /* No.11 */
@@ -137,28 +120,21 @@ class PurchaseStripeControllerTest extends TestCase
     }
 
     /* No.12 */
-    public function test_default_address(){
+    public function test_display_edit_address(){
         $response = $this->actingAs($this->user)
-            ->get(route('address.edit', [
-                'item_id' => $this->item->id
+            ->followingRedirects()
+            ->post(route('address.store', [
+                'item_id' => $this->item->id,
+                'post' => "000-1111",
+                'address' => "東京都世田谷区",
+                'building' => "〇〇マンション"
             ]));
-        $response->assertViewIs('address');
 
-        $responseData = [
-            'post' => $response['address']['post'],
-            'address' => $response['address']['address'],
-            'building' => $response['address']['building'],
-        ];
+        $content = $response->content();
 
-        $findData = Profile::where('user_id', $this->user->id)->first();
-        $dbData = [
-            'post' => $findData['post'],
-            'address' => $findData['address'],
-            'building' => $findData['building'],
-        ];
-
-        $this->assertEquals($responseData, $dbData);
-
+        $this->assertStringContainsString('000-1111', $content);
+        $this->assertStringContainsString('東京都世田谷区', $content);
+        $this->assertStringContainsString('〇〇マンション', $content);
     }
 
     public function test_stripe_charge_success(){
@@ -169,30 +145,20 @@ class PurchaseStripeControllerTest extends TestCase
             'building' => "〇〇マンション"
         ];
 
-        $response = $this->actingAs($this->user)
-            ->withSession(['address' => $address])
-            ->post(route('stripe.checkout',[
-                'item_id' => $this->item->id,
-                'payment' => 'card',
-                'address' => $address
-            ]));
+        $this->actingAs($this->user)
+        ->get(route('stripe.success', [
+            'item_id' => $this->item->id,
+            'address' => $address
+        ]));
 
-        $paymentIntent = $this->stripe->paymentIntents->create([
-            'amount' => 500,
-            'currency' => 'jpy',
-            'payment_method' => 'pm_card_visa',
-            'payment_method_types' => ['card'],
-            'confirm' => true,
+        //送付先住所変更画面で登録した住所が紐付けできているか確認する
+        $this->assertDatabaseHas('purchases', [
+            'user_id' => $this->user->id,
+            'item_id' => $this->item->id,
+            'post' => "000-1111",
+            'address' => "東京都世田谷区",
+            'building' => "〇〇マンション"
         ]);
-
-        // 決済のステータスが成功していることを確認
-        $this->assertEquals('succeeded', $paymentIntent->status);
-
-        // Purchasesテーブルに登録されていることを確認
-        // $response->assertDatabaseHas('purchases', [
-        //     'item_id' => $this->item->id,
-        //     'user_id' => $this->user->id,
-        // ]);
     }
 
 }
