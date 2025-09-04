@@ -58,13 +58,13 @@
 
 1. テスト用 DB を作成する
 
-```
-//テスト用データベースの作成
-docker-compose exec mysql bash
-mysql -u root -p
-//パスワードはrootと入力
-CREATE DATABASE demo_test;
-```
+   ```
+   //テスト用データベースの作成
+   docker-compose exec mysql bash
+   mysql -u root -p
+   //パスワードはrootと入力
+   CREATE DATABASE demo_test;
+   ```
 
 2. config/database.php を開き、 mysql の配列部分をコピーして新たに mysql_test を作成し、以下の項目を修正する
 
@@ -76,9 +76,9 @@ CREATE DATABASE demo_test;
 
 3. PHP コンテナにログインし、.env をコピーして.env.testing ファイルを作成する
 
-```
-cp .env .env.testing
-```
+   ```
+   cp .env .env.testing
+   ```
 
 4. .env.testing ファイルの以下項目を編集する
 
@@ -92,28 +92,28 @@ cp .env .env.testing
 
 5. テスト用アプリケーションキーを作成する
 
-```
-php artisan key:generate --env=testing
-```
+   ```
+   php artisan key:generate --env=testing
+   ```
 
 6. キャッシュを削除する
 
-```
-php artisan config:clear
-```
+   ```
+   php artisan config:clear
+   ```
 
 7. テスト用のテーブルを作成する
 
-```
-php artisan migrate --env=testing
-```
+   ```
+   php artisan migrate --env=testing
+   ```
 
 8. phpunit.xml の下記のコメントアウトを外す
 
-```
-<!-- <server name="DB_CONNECTION" value="sqlite"/> -->
-<!-- <server name="DB_DATABASE" value=":memory:"/> -->
-```
+   ```
+   <!-- <server name="DB_CONNECTION" value="sqlite"/> -->
+   <!-- <server name="DB_DATABASE" value=":memory:"/> -->
+   ```
 
 ## テストの実行
 
