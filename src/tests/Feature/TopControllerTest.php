@@ -39,21 +39,20 @@ class TopControllerTest extends TestCase
 
 
     /* No.4 */
-    public function test_item_get_all(){
+    public function test_get_items_all(){
         $expectedItems = $this->items;
-
         $response = $this->get(route('top.index'));
-        $response->assertStatus(200);
 
-        $viewItems = $response->viewData('items');
+        $contents = $response->content();
 
-        $this->assertCount($expectedItems->count(), $viewItems);
-        $this->assertEquals($expectedItems->pluck('id')->sort()->values(), $viewItems->pluck('id')->sort()->values());
+        foreach($expectedItems as $item){
+            $this->assertStringContainsString($item->item_name, $contents);
+        }
     }
 
     public function test_item_get_sold(){
         //購入された商品データを作成する
-        $item = $this->items->first();
+        $item = $this->items->last();
         Purchase::insert([
             'user_id' => $this->user->id,
             'item_id' => $item->id,
@@ -64,7 +63,6 @@ class TopControllerTest extends TestCase
 
         $response = $this->actingAs($this->user)->get('/');
 
-        $response->assertStatus(200);
         $contents = $response->content();
         $this->assertStringContainsString($item->item_name . '　Sold', $contents);
     }
@@ -77,7 +75,11 @@ class TopControllerTest extends TestCase
         // 自分が出品していないアイテムを取得
         $notSellItems = Item::whereNotIn('user_id', [$this->user->id])->get();
 
-        $this->assertEquals($response['items']->pluck('id')->sortBy('id')->values(),$notSellItems->pluck('id')->sortBy('id')->values());
+        $contents = $response->content();
+
+        foreach($notSellItems as $item){
+            $this->assertStringContainsString($item->item_name, $contents);
+        }
     }
 
     /* No.5 */

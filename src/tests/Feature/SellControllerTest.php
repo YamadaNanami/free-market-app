@@ -38,10 +38,10 @@ class SellControllerTest extends TestCase
         $this->user = User::with('profile')->first();
     }
 
+    /* No.15 */
     public function test_store_item(){
         $response = $this->actingAs($this->user)
             ->get('/sell');
-        $response->assertStatus(200);
 
         $requestData = [
             'user_id' => $this->user->id,
@@ -63,6 +63,17 @@ class SellControllerTest extends TestCase
 
         $response->assertRedirect('mypage');
 
+        // DBに商品とカテゴリーの紐付けができていることを確認する
+        $item = Item::where('item_name', 'テスト商品')->first();
+        $this->assertDatabaseHas('category_item', [
+            'item_id'     => $item->id,
+            'category_id' => 1,
+        ]);
+        $this->assertDatabaseHas('category_item', [
+            'item_id'     => $item->id,
+            'category_id' => 2,
+        ]);
+
         //DBに商品が登録されていることを確認する
         $this->assertDatabaseHas('items', [
             'condition' => 1,
@@ -70,17 +81,6 @@ class SellControllerTest extends TestCase
             'description' => '商品説明です',
             'price' => 100,
         ]);
-
-        // DBに商品とカテゴリーの紐付けができていることを確認する
-        $item = Item::where('item_name', 'テスト商品')->first();
-        $this->assertDatabaseHas('category_item', [
-                'item_id'     => $item->id,
-                'category_id' => 1,
-            ]);
-        $this->assertDatabaseHas('category_item', [
-                'item_id'     => $item->id,
-                'category_id' => 2,
-            ]);
 
     }
 

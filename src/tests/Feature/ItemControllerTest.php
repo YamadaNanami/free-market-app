@@ -46,16 +46,30 @@ class ItemControllerTest extends TestCase
     public function test_item_detail(){
         $expectedItem = Item::with('categories')->find($this->item->id);
 
-        $categories = $expectedItem->categories->pluck('id')->sortBy('id')->values();
+        switch($expectedItem->condition){
+            case 1:
+                $condition = '良好';
+                break;
+            case 2:
+                $condition = '目立った傷や汚れなし';
+                break;
+            case 3:
+                $condition = 'やや傷や汚れあり';
+                break;
+            default:
+                $condition = '状態が悪い';
+                break;
+        }
+
+        $categories = $expectedItem->categories->sortBy('id')->values();
 
         // 商品にコメントといいねをつける
         $expectedItem->comments()->attach($this->user->id, [
             'comment' => 'テストコメント'
         ]);
-
         $expectedItem->like()->attach($this->user->id);
 
-        // コメント数と最初の商品の最初のコメント内容を取得
+        // コメント数と商品に紐づく1番目のコメント内容を取得
         $countCmt = $expectedItem->comments->count();
         $comment = $expectedItem->comments()->first();
         $firstCmt = [
@@ -67,49 +81,39 @@ class ItemControllerTest extends TestCase
         // いいね数を取得
         $countLike = $expectedItem->like->count();
 
-        // responseから値を取得する
         $response = $this->get('/item/:'.$this->item->id);
-        $response->assertStatus(200);
+        $contents = $response->content();
 
-        $viewItem = $response['item'];
-        $viewCategories = $response['categories']->pluck('id')->sortBy('id')->values();
-        $viewCmt = $response['comment'];
-        $viewLike= $response['like'];
+        //各項目が表示されているか確認する
+        $this->assertStringContainsString('<img src="http://localhost/storage/img/'.$expectedItem->img_url.'" alt="商品画像" class="item-img">', $contents);
 
-        // 商品画像
-        $this->assertEquals($expectedItem['img_url'], $viewItem['img_url']);
+        $this->assertStringContainsString('<h2 class="page-title">' . $expectedItem->item_name . '</h2>', $contents);
 
-        // 商品名
-        $this->assertEquals($expectedItem['item_name'], $viewItem['item_name']);
+        $this->assertStringContainsString('<p class="brand-name">' . $expectedItem->brand_name . '</p>',$contents);
 
-        // ブランド名
-        $this->assertEquals($expectedItem['brand_name'], $viewItem['brand_name']);
+        $this->assertStringContainsString('<p class="price">¥' . number_format($expectedItem->price) . ' (税込)</p>',$contents);
 
-        // 商品価格
-        $this->assertEquals($expectedItem['price'], $viewItem['price']);
+        $this->assertStringContainsString('<p class="pieces">' . $countLike . '</p>', $contents);
 
-        //いいね数
-        $this->assertEquals($countLike, $viewLike['count']);
+        $this->assertStringContainsString('<p class="pieces">' . $countCmt . '</p>', $contents);
 
-        // コメント数
-        $this->assertEquals($countCmt, $viewCmt['count']);
+        $this->assertStringContainsString('<p class="item-info">' . $expectedItem->description . '</p>', $contents);
 
-        // 商品の説明
-        $this->assertEquals($expectedItem['description'], $viewItem['description']);
+        foreach($categories as $category){
+            $categoryText = $category->category;
 
-        // カテゴリー
-        $this->assertEquals($categories, $viewCategories);
+            $this->assertStringContainsString('<p class="category">'.$categoryText.'</p>', $contents);
+        }
 
-        // 商品の状態
-        $this->assertEquals($expectedItem['condition'], $viewItem['condition']);
+        $this->assertStringContainsString($condition,$contents);
 
-        //コメントしたユーザ情報
-        $this->assertEquals($firstCmt['user']['profile']['img_url'], $viewCmt['user']['profile']['img_url']);
+        $this->assertStringContainsString('<h3 class="sec-title">コメント(' . $countCmt . ')</h3>', $contents);
 
-        $this->assertEquals($firstCmt['user']['name'], $viewCmt['user']['name']);
+        $this->assertStringContainsString('<img src=" http://localhost/storage/img/noImage.png " alt="プロフィール画像" class="user-img">', $contents);
 
-        // 表示しているコメント内容
-        $this->assertEquals($firstCmt['comment'], $viewCmt['comment']);
+        $this->assertStringContainsString('<p class="user-name">'.$firstCmt['user']['name'].'</p>',$contents);
+
+        $this->assertStringContainsString('<p class="cmt">'.$firstCmt['comment'].'</p>',$contents);
     }
 
     /* No.8 */
@@ -152,12 +156,12 @@ class ItemControllerTest extends TestCase
 
         $response = $this->actingAs($this->user)
             ->get(route('item.detail', ['item_id' => $this->item->id]));
-        $response->assertStatus(200);
 
         // 商品詳細画面を表示した時点でのいいね数を取得
         $likeData = $response->viewData('like');
         $count = $likeData['count'];
 
+        // いいねを解除する
         $response = $this->actingAs($this->user)
             ->post('/item/:'.$this->item->id.'/like',[
                 'like' => 'hasLikedItem'
@@ -183,7 +187,6 @@ class ItemControllerTest extends TestCase
     public function test_store_comment_success(){
         $response = $this->actingAs($this->user)
             ->get(route('item.detail', ['item_id' => $this->item->id]));
-        $response->assertStatus(200);
 
         $commentData = $response->viewData('comment');
         $count = $commentData['count'];
@@ -194,9 +197,8 @@ class ItemControllerTest extends TestCase
                 'comment' => 'テストコメント'
             ]));
 
-        // 再ログインしてコメント数を取得する
-        $response = $this->actingAs($this->user)
-            ->get(route('item.detail', ['item_id' => $this->item->id]));
+        // 再表示してコメント数を取得する
+        $response = $this->get(route('item.detail', ['item_id' => $this->item->id]));
         $commentData = $response->viewData('comment');
         $newCount = $commentData['count'];
 
@@ -212,20 +214,25 @@ class ItemControllerTest extends TestCase
 
     }
 
-    public function test_can_not_store_comment(){
-        $response = $this->get(route('item.detail', ['item_id' => $this->item->id]));
-        $response->assertStatus(200);
+    public function test_fails_store_comment(){
+        $this->get(route('item.detail', ['item_id' => $this->item->id]));
 
         $response = $this->post(route('comment', [
                 'item_id' => $this->item->id,
                 'comment' => 'テストコメント'
             ]));
 
+        // 送信したコメントがDBに登録されていないことを確認する
+        $this->assertDatabaseMissing('comments', [
+            'item_id' => $this->item->id,
+            'comment' => 'テストコメント'
+        ]);
+
         // ログインが必要な操作のため、login画面に遷移されることを確認する
         $response->assertRedirect('/login');
     }
 
-    public function test_not_send_without_comment(){
+    public function test_fails_send_without_comment(){
         $response = $this->actingAs($this->user)
             ->get(route('item.detail', ['item_id' => $this->item->id]));
         $response->assertStatus(200);
@@ -240,7 +247,7 @@ class ItemControllerTest extends TestCase
 
         $this->assertEquals('コメントを入力してください', $errors['comment'][0]);
     }
-    public function test_not_send_over_comment(){
+    public function test_fails_send_over_comment(){
         $response = $this->actingAs($this->user)
             ->get(route('item.detail', ['item_id' => $this->item->id]));
         $response->assertStatus(200);

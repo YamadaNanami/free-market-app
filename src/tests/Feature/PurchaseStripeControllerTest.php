@@ -97,12 +97,12 @@ class PurchaseStripeControllerTest extends TestCase
                 'item_id' => $this->item->id
             ]));
 
-        $response->assertViewIs('purchase');
-
         $response = $this->actingAs($this->user)
+            ->followingRedirects()
             ->post('/purchase/payment', ['payment' => 'card']);
 
-        $this->assertEquals(session('payment'), 'card');
+        $contents = $response->content();
+        $this->assertStringContainsString('カード払い', $contents);
     }
 
     public function test_can_select_konbini(){
@@ -111,12 +111,12 @@ class PurchaseStripeControllerTest extends TestCase
                 'item_id' => $this->item->id
             ]));
 
-        $response->assertViewIs('purchase');
-
         $response = $this->actingAs($this->user)
+            ->followingRedirects()
             ->post('/purchase/payment', ['payment' => 'konbini']);
 
-        $this->assertEquals(session('payment'), 'konbini');
+        $contents = $response->content();
+        $this->assertStringContainsString('コンビニ払い', $contents);
     }
 
     /* No.12 */

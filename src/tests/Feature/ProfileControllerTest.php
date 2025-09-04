@@ -34,32 +34,27 @@ class ProfileControllerTest extends TestCase
     }
 
     /* No.14 */
-    public function test_view_profile(){
+    public function test_display_default_profile(){
         // コントローラー側の処理
         $response = $this->actingAs($this->user)
             ->get(route('profile.index'));
 
         // データ整形
-        $responseData = [
-            'img_url' => $response['profile']['profile']['img_url'],
-            'name' => $response['profile']['name'],
-            'post' => $response['profile']['profile']['post'],
-            'address' => $response['profile']['profile']['address'],
-            'building' => $response['profile']['profile']['building'],
-        ];
-
-        $dbData = [
-            'img_url' => $this->user->profile->img_url,
+        $userInfo = [
             'name' => $this->user->name,
             'post' => $this->user->profile->post,
             'address' => $this->user->profile->address,
             'building' => $this->user->profile->building,
         ];
 
-        $this->assertEquals(
-            $responseData,
-            $dbData
-        );
+        // ユーザーが登録したプロフィール情報が初期値として表示されているかを確認する
+        $content = $response->content();
+
+        $this->assertStringContainsString('noImage.png', $content);
+        $this->assertStringContainsString($userInfo['name'], $content);
+        $this->assertStringContainsString($userInfo['post'], $content);
+        $this->assertStringContainsString($userInfo['address'], $content);
+        $this->assertStringContainsString($userInfo['building'], $content);
     }
 
 }
